@@ -4,18 +4,18 @@ function matchesField(fieldName, key) {
   return fieldName.toLowerCase().includes(key.toLowerCase());
 }
 
-function resolveName(node) {
+function resolveName(node, label) {
   switch (true) {
-    case matchesField(fieldName, "first"):
+    case matchesField(label, "first"):
       node.value = "First Name";
       break;
-    case matchesField(fieldName, "last"):
+    case matchesField(label, "last"):
       node.value = "Last Name";
       break;
-    case matchesField(fieldName, "full"):
+    case matchesField(label, "full"):
       node.value = "Full Name";
       break;
-    case matchesField(fieldName, "middle"):
+    case matchesField(label, "middle"):
       node.value = "Middle Name";
       break;
     default:
@@ -26,9 +26,10 @@ function resolveName(node) {
 function enterInput(node) {
   if (node["labels"] && node["labels"][0]) {
     const label = node["labels"][0].innerText;
+    console.log(label);
     switch (true) {
       case matchesField(label, "name"):
-        node.value = resolveName(node);
+        resolveName(node, label);
         break;
       case matchesField(label, "email"):
         node.value = "email@gmail.com";
@@ -48,13 +49,16 @@ function enterInput(node) {
       case matchesField(label, "phone") || matchesField(label, "tel"):
         node.value = 1234567890;
         break;
+      case matchesField(label, "contact") && matchesField(label, "type"):
+        node.value = "Mobile";
+        break;
       case matchesField(label, "address"):
         node.value = "1234 Some House Drive";
         break;
       case matchesField(label, "current location"):
         node.value = "Miami Lakes, FL, USA";
         break;
-      case matchesField(label, "linkedin"):
+      case matchesField(label, "linkedin") || matchesField(label, "profile"):
         node.value = "LinkedIn";
         break;
       case matchesField(label, "github") || matchesField(label, "website"):
