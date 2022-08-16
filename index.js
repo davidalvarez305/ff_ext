@@ -4,22 +4,25 @@ function matchesField(fieldName, key) {
   return fieldName.toLowerCase().includes(key.toLowerCase());
 }
 
-function resolveName(node, label) {
-  switch (true) {
-    case matchesField(label, "first"):
-      node.value = "First Name";
-      break;
-    case matchesField(label, "last"):
-      node.value = "Last Name";
-      break;
-    case matchesField(label, "full"):
-      node.value = "Full Name";
-      break;
-    case matchesField(label, "middle"):
-      node.value = "Middle Name";
-      break;
-    default:
-      node.value = "Full Name";
+function resolveName(node) {
+  if (node["labels"] && node["labels"][0]) {
+    const label = node["labels"][0].innerText;
+    switch (true) {
+      case matchesField(label, "first"):
+        node.value = "First Name";
+        break;
+      case matchesField(label, "last"):
+        node.value = "Last Name";
+        break;
+      case matchesField(label, "full"):
+        node.value = "Full Name";
+        break;
+      case matchesField(label, "middle"):
+        node.value = "Middle Name";
+        break;
+      default:
+        node.value = "Full Name";
+    }
   }
 }
 
@@ -38,7 +41,7 @@ function resolveCheckbox(node) {
   }
 }
 
-function enterInput(node) {
+function searchByLabel(node) {
   if (node["type"] === "checkbox") {
     resolveCheckbox(node);
   }
@@ -124,6 +127,36 @@ function enterInput(node) {
         break;
       default:
         node.value = "";
+    }
+  }
+}
+
+function enterInput(node) {
+  const fields = ["id", "name", "autocomplete", "className"];
+
+  for (let i = 0; i < fields.length; i++) {
+    const field = fields[i];
+    if (node[field]) {
+      switch (true) {
+        case matchesField(node[field], "name"):
+          resolveName(node);
+          break;
+        case matchesField(node[field], "email"):
+          node.value = "email@gmail.com";
+          break;
+        case matchesField(node[field], "password"):
+          node.value = "password";
+          break;
+        case matchesField(node[field], "country"):
+          node.value = "My Country";
+          node.value = "United States";
+          break;
+        case matchesField(node[field], "city"):
+          node.value = "My City";
+        default:
+          searchByLabel(node);
+          break;
+      }
     }
   }
 }
