@@ -4,15 +4,60 @@ function matchesField(fieldName, key) {
   return fieldName.toLowerCase().includes(key.toLowerCase());
 }
 
-function customFields(node) {
+function resolveName(node) {
+  switch (true) {
+    case matchesField(fieldName, "first"):
+      node.value = "First Name";
+      break;
+    case matchesField(fieldName, "last"):
+      node.value = "Last Name";
+      break;
+    case matchesField(fieldName, "full"):
+      node.value = "Full Name";
+      break;
+    case matchesField(fieldName, "middle"):
+      node.value = "Middle Name";
+      break;
+    default:
+      node.value = "Full Name";
+  }
+}
+
+function enterInput(node) {
   if (node["labels"] && node["labels"][0]) {
     const label = node["labels"][0].innerText;
-    console.log(label);
     switch (true) {
-      case matchesField(label, "linkedin profile"):
+      case matchesField(label, "name"):
+        node.value = resolveName(node);
+        break;
+      case matchesField(label, "email"):
+        node.value = "email@gmail.com";
+        break;
+      case matchesField(label, "password"):
+        node.value = "password";
+        break;
+      case matchesField(label, "country"):
+        node.value = "United States";
+        break;
+      case matchesField(label, "city"):
+        node.value = "My City";
+        break;
+      case matchesField(label, "zip") || matchesField(label, "postal"):
+        node.value = 12345;
+        break;
+      case matchesField(label, "phone") || matchesField(label, "tel"):
+        node.value = 1234567890;
+        break;
+      case matchesField(label, "address"):
+        node.value = "1234 Some House Drive";
+        break;
+      case matchesField(label, "current location"):
+        node.value = "Miami Lakes, FL, USA";
+        break;
+      case matchesField(label, "linkedin"):
         node.value = "LinkedIn";
         break;
-      case matchesField(label, "github"):
+      case matchesField(label, "github") || matchesField(label, "website"):
         node.value = "Github";
         break;
       case matchesField(label, "salary") || matchesField(label, "compensation"):
@@ -21,111 +66,39 @@ function customFields(node) {
       case matchesField(label, "how did you hear about this job"):
         node.value = "LinkedIn";
         break;
+      case matchesField(label, "how did you hear about us"):
+        node.value = "Social Network";
+        break;
+      case matchesField(label, "have you previously worked for"):
+        node.value = "No";
+        break;
       case matchesField(label, "state"):
         node.value = "Florida";
         break;
       case matchesField(label, "gender"):
         node.value = "Male";
         break;
-      case matchesField(label, "hispanic"):
+      case matchesField(label, "hispanic") || matchesField(label, "race"):
         node.value = "Yes";
         break;
       case matchesField(label, "veteran"):
         node.value = "I am not a protected veteran";
         break;
+      case matchesField(label, "disability"):
+        node.value =
+          "No, I don't have a disability, or a history/record of having a disability";
+        break;
       case matchesField(label, "authorized to work in the united states"):
+        node.value = "Yes";
+        break;
+      case matchesField(label, "immigration sponsorship for employment visa"):
+        node.value = "Yes";
+        break;
+      case matchesField(label, "legally authorized to work in the country"):
         node.value = "Yes";
         break;
       default:
         node.value = "";
-    }
-  }
-}
-
-function resolveName(node, field) {
-  let name = "";
-  let fieldName = "";
-
-  if (!node["labels"]) {
-    fieldName = node[field];
-  } else {
-    fieldName = node["labels"][0].innerText;
-  }
-
-  switch (true) {
-    case matchesField(fieldName, "first"):
-      name = "First Name";
-      break;
-    case matchesField(fieldName, "last"):
-      name = "Last Name";
-      break;
-    case matchesField(fieldName, "full"):
-      name = "Full Name";
-      break;
-    case matchesField(fieldName, "middle"):
-      name = "Middle Name";
-      break;
-    default:
-      name = "Full Name";
-  }
-
-  return name;
-}
-
-function findSiblings(node) {
-  node.nextSibling;
-}
-
-function enterInput(node) {
-  const fields = ["id", "name", "autocomplete", "className"];
-
-  if (node["nodeName"] === "SELECT") {
-    console.log("Select node: ", node);
-  }
-
-  for (let i = 0; i < fields.length; i++) {
-    const field = fields[i];
-    if (node[field]) {
-      switch (true) {
-        case matchesField(node[field], "name"):
-          node.value = resolveName(node, field);
-          break;
-        case matchesField(node[field], "email"):
-          node.value = "email@gmail.com";
-          break;
-        case matchesField(node[field], "password"):
-          node.value = "password";
-          break;
-        case matchesField(node[field], "country"):
-          node.value = "United States";
-          break;
-        case matchesField(node[field], "city"):
-          node.value = "My City";
-          break;
-        case matchesField(node[field], "zip") ||
-          matchesField(node[field], "postal"):
-          node.value = 12345;
-          break;
-        case matchesField(node[field], "phone") ||
-          matchesField(node[field], "tel"):
-          node.value = 1234567890;
-          break;
-        case matchesField(node[field], "address"):
-          node.value = "1234 Some House Drive";
-          break;
-        case matchesField(node[field], "about"):
-          node.value = "This is the about me section.";
-          break;
-        case matchesField(node[field], "linkedin"):
-          node.value = "https://www.linkedin.com/";
-          break;
-        case matchesField(node[field], "additional"):
-          node.value = "Additional information field.";
-          break;
-        default:
-          customFields(node);
-          break;
-      }
     }
   }
 }
