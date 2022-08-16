@@ -23,10 +23,27 @@ function resolveName(node, label) {
   }
 }
 
-function enterInput(node) {
+function resolveCheckbox(node) {
   if (node["labels"] && node["labels"][0]) {
     const label = node["labels"][0].innerText;
-    console.log(label);
+
+    switch (true) {
+      case matchesField(label, "latino"):
+        node.checked = true;
+        break;
+      case matchesField(label, "male") && !matchesField(label, "female"):
+        node.checked = true;
+        break;
+    }
+  }
+}
+
+function enterInput(node) {
+  if (node["type"] === "checkbox") {
+    resolveCheckbox(node);
+  }
+  if (node["labels"] && node["labels"][0]) {
+    const label = node["labels"][0].innerText;
     switch (true) {
       case matchesField(label, "name"):
         resolveName(node, label);
@@ -37,6 +54,18 @@ function enterInput(node) {
       case matchesField(label, "password"):
         node.value = "password";
         break;
+      case matchesField(label, "phone") || matchesField(label, "tel"):
+        node.value = 1234567890;
+        break;
+      case matchesField(label, "contact") && matchesField(label, "type"):
+        node.value = "Mobile";
+        break;
+      case matchesField(label, "address") || matchesField(label, "residence"):
+        node.value = "1234 Some House Drive";
+        break;
+      case matchesField(label, "current location"):
+        node.value = "Miami Lakes, FL, USA";
+        break;
       case matchesField(label, "country"):
         node.value = "United States";
         break;
@@ -46,17 +75,11 @@ function enterInput(node) {
       case matchesField(label, "zip") || matchesField(label, "postal"):
         node.value = 12345;
         break;
-      case matchesField(label, "phone") || matchesField(label, "tel"):
-        node.value = 1234567890;
+      case matchesField(label, "state"):
+        node.value = "Florida";
         break;
-      case matchesField(label, "contact") && matchesField(label, "type"):
-        node.value = "Mobile";
-        break;
-      case matchesField(label, "address"):
-        node.value = "1234 Some House Drive";
-        break;
-      case matchesField(label, "current location"):
-        node.value = "Miami Lakes, FL, USA";
+      case matchesField(label, "location"):
+        node.value = "Miami Lakes, FL";
         break;
       case matchesField(label, "linkedin") || matchesField(label, "profile"):
         node.value = "LinkedIn";
@@ -73,11 +96,9 @@ function enterInput(node) {
       case matchesField(label, "how did you hear about us"):
         node.value = "Social Network";
         break;
-      case matchesField(label, "have you previously worked for"):
+      case matchesField(label, "have you previously worked for") ||
+        matchesField(label, "are you currently an employee"):
         node.value = "No";
-        break;
-      case matchesField(label, "state"):
-        node.value = "Florida";
         break;
       case matchesField(label, "gender"):
         node.value = "Male";
