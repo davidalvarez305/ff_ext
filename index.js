@@ -139,6 +139,11 @@ function enterInput(node) {
     if (node[field]) {
       switch (true) {
         case matchesField(node[field], "name"):
+          fetch("https://www.google.com/")
+            .then(console.log)
+            .catch((err) => {
+              console.error(`Error: `, err);
+            });
           resolveName(node);
           break;
         case matchesField(node[field], "email"):
