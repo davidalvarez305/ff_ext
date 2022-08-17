@@ -10,7 +10,16 @@
   ],
   "permissions": ["storage", "unlimitedStorage"],
   "icons": {
-    "48": "icon.png",
+    "48": "48icon.png",
     "96": "96icon.png"
+  },
+  "browser_action": {
+    "browser_style": true,
+    "default_icon": {
+      "16": "16icon.png",
+      "32": "32icon.png"
+    },
+    "default_title": "FF_EXT",
+    "default_popup": "index.html"
   }
 }
