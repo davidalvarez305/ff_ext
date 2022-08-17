@@ -139,11 +139,6 @@ function enterInput(node) {
     if (node[field]) {
       switch (true) {
         case matchesField(node[field], "name"):
-          fetch("https://www.google.com/")
-            .then(console.log)
-            .catch((err) => {
-              console.error(`Error: `, err);
-            });
           resolveName(node);
           break;
         case matchesField(node[field], "email"):
@@ -170,8 +165,52 @@ function findFields(node) {
   if (node.hasChildNodes()) {
     node.childNodes.forEach(findFields);
   } else {
+    console.log("find fields...");
     enterInput(node);
   }
 }
 
-findFields(nodes);
+function main() {
+  console.log("Starting....");
+
+  let user = {
+    NmkQZWeW9_ojadERwK74HXYj43Lw: 0.3039316821878978,
+    PZiFauEC6H: 0.04273172815465165,
+    "2m7cMrwRPoxpa8LvmpAaJ": 0.7010494474513925,
+    D: 0.4552683870622114,
+    HQhIxPxO8tsdocRuGJpnhB7k2PjD: 0.18360190519964337,
+    rVwM8: 0.8681098855694265,
+    "3Vf5HGYDOmUli3": 0.527829742115212,
+    fQ4ryGL2cxhJeRd: 0.10353706566292953,
+    D_DQqODu_: 0.1272988336424956,
+    "8UY0a7": 0.17057184875868092,
+    "8i1uVtPwzl0KRA8iYZ4uKcPKF": 0.9554370948377217,
+    TTi: 0.038665872114993616,
+    YofUj9RrK7foQrl: 0.5835241172217945,
+    sb3SzEB_: 0.17136910050721899,
+    "801FopHCCML4ozrfmjak": 0.10999126507324442,
+    D8: 0.05981337403919851,
+    oL8ZZvrAG: 0.36816486041399255,
+    hfXxJ0sNp42y2HYEDXLBYgZ6mV: 0.13977757384990708,
+    "2xx4AJrQswA5TIcXr": 0.8610074761855161,
+    "68RNcKQmgnh_qTG": 0.5234909406332302,
+    wJsV8BRo1cT2MtXDuh: 0.4497261910215308,
+    "6yFr4E81bvXK": 0.5996413679577888,
+    Px2bjBvFSBu: 0.017922504534248707,
+    yazK1KQbmUhE4Ul1rZX5hf0yulX_JK: 0.7105144243046027,
+    cXmdnvmP: 0.028121925940253756,
+    R_fDjw9yBejk3: 0.699514797889162,
+    z: 0.34347612922580006,
+    "2kTX6Q2tzbCo3": 0.678962211994213,
+  };
+
+  browser.storage.local
+    .get("user")
+    .then((res) => {
+      console.log("res: ", res);
+    })
+    .catch(console.error);
+  findFields(nodes);
+}
+
+main();
