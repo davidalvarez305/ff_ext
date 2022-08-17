@@ -148,7 +148,6 @@ function enterInput(node) {
           node.value = "password";
           break;
         case matchesField(node[field], "country"):
-          node.value = "My Country";
           node.value = "United States";
           break;
         case matchesField(node[field], "city"):

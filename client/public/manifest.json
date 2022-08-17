@@ -5,7 +5,7 @@
   "content_scripts": [
     {
       "matches": ["<all_urls>"],
-      "js": ["index.js"]
+      "js": ["index.html"]
     }
   ],
   "permissions": ["storage", "unlimitedStorage"],
