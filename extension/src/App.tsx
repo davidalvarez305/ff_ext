@@ -1,5 +1,6 @@
 import { Box } from "@chakra-ui/react";
 import { useEffect, useState } from "react";
+import { fillFields } from "./fillFields";
 import { Layout } from "./Layout";
 import { Setup } from "./Setup";
 import { TopButtons } from "./TopButtons";
@@ -8,6 +9,11 @@ import { emptyUser, User } from "./utils";
 export const App = () => {
   const [showSetup, setShowSetup] = useState(false);
   const [user, setUser] = useState<User>(emptyUser);
+
+  function handleFillClicks() {
+    console.log("Filling fields...");
+    fillFields(user);
+  }
 
   useEffect(() => {
     browser.storage.local
@@ -30,7 +36,10 @@ export const App = () => {
     return (
       <Layout>
         <Box sx={styles}>
-          <TopButtons rightButtonClick={() => setShowSetup((prev) => !prev)} />
+          <TopButtons
+            leftButtonClick={() => handleFillClicks()}
+            rightButtonClick={() => setShowSetup((prev) => !prev)}
+          />
           <Box sx={{ overflow: "scroll", height: "100vh" }}>
             <Setup user={user} />
           </Box>
@@ -41,7 +50,10 @@ export const App = () => {
 
   return (
     <Layout>
-      <TopButtons rightButtonClick={() => setShowSetup((prev) => !prev)} />
+      <TopButtons
+        leftButtonClick={() => handleFillClicks()}
+        rightButtonClick={() => setShowSetup((prev) => !prev)}
+      />
       <Box sx={{ height: "100vh" }}>Yo</Box>
     </Layout>
   );

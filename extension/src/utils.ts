@@ -26,8 +26,16 @@ export const fields = [
     name: "ethnicity",
   },
   {
+    label: "Race",
+    name: "race",
+  },
+  {
     label: "Sex",
     name: "sex",
+  },
+  {
+    label: "Gender",
+    name: "gender",
   },
   {
     label: "Preferred Contact Type",
@@ -97,7 +105,11 @@ export const fields = [
   },
   {
     label: "FAQ #3: Do you have a disability?",
-    name: "faqThree",
+    name: "disabilityStatus",
+  },
+  {
+    label: "What's your veteran status?",
+    name: "veteranStatus",
   },
   {
     label: "FAQ #4: Are you authorized to work in the United States?",
@@ -132,9 +144,13 @@ export type User = {
   salary: string;
   faqOne?: string;
   faqTwo?: string;
-  faqThree?: string;
   faqFour?: string;
   faqFive?: string;
+  sex: string;
+  gender: string;
+  race: string;
+  veteranStatus: string;
+  disabilityStatus: string;
 };
 
 export const emptyUser = {
@@ -144,6 +160,9 @@ export const emptyUser = {
   phoneNumber: 0,
   middleName: "",
   ethnicity: "",
+  race: "",
+  sex: "",
+  gender: "",
   password: "",
   contactType: "",
   addressLineOne: "",
@@ -160,7 +179,8 @@ export const emptyUser = {
   salary: "",
   faqOne: "",
   faqTwo: "",
-  faqThree: "",
   faqFour: "",
   faqFive: "",
+  veteranStatus: "",
+  disabilityStatus: "",
 };

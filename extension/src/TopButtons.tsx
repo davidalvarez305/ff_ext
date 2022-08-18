@@ -3,9 +3,13 @@ import React from "react";
 
 interface Props {
   rightButtonClick: () => void;
+  leftButtonClick: () => void;
 }
 
-export const TopButtons: React.FC<Props> = ({ rightButtonClick }) => {
+export const TopButtons: React.FC<Props> = ({
+  rightButtonClick,
+  leftButtonClick,
+}) => {
   return (
     <Box
       sx={{
@@ -17,7 +21,12 @@ export const TopButtons: React.FC<Props> = ({ rightButtonClick }) => {
         my: 2,
       }}
     >
-      <Button variant={"outline"} colorScheme={"blue"} width={75}>
+      <Button
+        variant={"outline"}
+        colorScheme={"blue"}
+        width={75}
+        onClick={leftButtonClick}
+      >
         Fill
       </Button>
       <Button

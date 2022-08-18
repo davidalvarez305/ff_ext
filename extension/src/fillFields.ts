@@ -1,129 +1,130 @@
-const nodes = document.body;
+import { User } from "./utils";
 
-function matchesField(fieldName, key) {
+function matchesField(fieldName: string, key: string) {
   return fieldName.toLowerCase().includes(key.toLowerCase());
 }
 
-function resolveName(node) {
+function resolveName(node: any, user: User) {
   if (node["labels"] && node["labels"][0]) {
     const label = node["labels"][0].innerText;
     switch (true) {
       case matchesField(label, "first"):
-        node.value = "First Name";
+        node.value = user.firstName;
         break;
       case matchesField(label, "last"):
-        node.value = "Last Name";
+        node.value = user.lastName;
         break;
       case matchesField(label, "full"):
-        node.value = "Full Name";
+        node.value = user.firstName + user.lastName;
         break;
       case matchesField(label, "middle"):
-        node.value = "Middle Name";
+        node.value = user.middleName;
         break;
       default:
-        node.value = "Full Name";
+        node.value = user.firstName + user.lastName;
     }
   }
 }
 
-function resolveCheckbox(node) {
+function resolveCheckbox(node: any, user: User) {
   if (node["labels"] && node["labels"][0]) {
     const label = node["labels"][0].innerText;
 
     switch (true) {
       case matchesField(label, "latino"):
-        node.checked = true;
+        node.checked = user.ethnicity === "latino";
         break;
       case matchesField(label, "male") && !matchesField(label, "female"):
-        node.checked = true;
+        node.checked = user.sex === "male";
         break;
     }
   }
 }
 
-function searchByLabel(node) {
+function searchByLabel(node: any, user: User) {
   if (node["type"] === "checkbox") {
-    resolveCheckbox(node);
+    resolveCheckbox(node, user);
   }
   if (node["labels"] && node["labels"][0]) {
     const label = node["labels"][0].innerText;
     switch (true) {
       case matchesField(label, "name"):
-        resolveName(node, label);
+        resolveName(node, user);
         break;
       case matchesField(label, "email"):
-        node.value = "email@gmail.com";
+        node.value = user.email;
         break;
       case matchesField(label, "password"):
-        node.value = "password";
+        node.value = user.password;
         break;
       case matchesField(label, "phone") || matchesField(label, "tel"):
-        node.value = 1234567890;
+        node.value = user.phoneNumber;
         break;
       case matchesField(label, "contact") && matchesField(label, "type"):
-        node.value = "Mobile";
+        node.value = user.contactType;
         break;
       case matchesField(label, "address") || matchesField(label, "residence"):
-        node.value = "1234 Some House Drive";
+        node.value = user.addressLineOne;
         break;
       case matchesField(label, "current location"):
-        node.value = "Miami Lakes, FL, USA";
+        node.value = `${user.city}, ${user.state}, ${user.country}`;
         break;
       case matchesField(label, "country"):
-        node.value = "United States";
+        node.value = user.country;
         break;
       case matchesField(label, "city"):
-        node.value = "My City";
+        node.value = user.city;
         break;
       case matchesField(label, "zip") || matchesField(label, "postal"):
-        node.value = 12345;
+        node.value = user.zip;
         break;
       case matchesField(label, "state"):
-        node.value = "Florida";
+        node.value = user.state;
         break;
       case matchesField(label, "location"):
-        node.value = "Miami Lakes, FL";
+        node.value = `${user.city}, ${user.state}`;
         break;
       case matchesField(label, "linkedin") || matchesField(label, "profile"):
-        node.value = "LinkedIn";
+        node.value = user.linkedin;
         break;
-      case matchesField(label, "github") || matchesField(label, "website"):
-        node.value = "Github";
+      case matchesField(label, "github") ||
+        matchesField(label, "website") ||
+        matchesField(label, "portfolio"):
+        node.value = user.portfolio;
         break;
       case matchesField(label, "salary") || matchesField(label, "compensation"):
-        node.value = "Open";
+        node.value = user.salary;
         break;
       case matchesField(label, "how did you hear about this job"):
-        node.value = "LinkedIn";
+        node.value = user.faqOne ? user.faqOne : "";
         break;
       case matchesField(label, "how did you hear about us"):
-        node.value = "Social Network";
+        node.value = user.faqOne ? user.faqOne : "";
         break;
       case matchesField(label, "have you previously worked for") ||
         matchesField(label, "are you currently an employee"):
-        node.value = "No";
+        node.value = user.faqTwo ? user.faqTwo : "";
         break;
       case matchesField(label, "gender"):
-        node.value = "Male";
+        node.value = user.gender;
         break;
       case matchesField(label, "hispanic") || matchesField(label, "race"):
-        node.value = "Yes";
+        node.value = user.race;
         break;
       case matchesField(label, "veteran"):
-        node.value = "I am not a protected veteran";
+        node.value = user.veteranStatus;
         break;
       case matchesField(label, "disability"):
-        node.value =
-          "No, I don't have a disability, or a history/record of having a disability";
+        node.value = user.disabilityStatus;
         break;
       case matchesField(label, "authorized to work in the united states"):
-        node.value = "Yes";
+        node.value = user.faqFour ? user.faqFour : "";
         break;
       case matchesField(label, "immigration sponsorship for employment visa"):
-        node.value = "Yes";
+        node.value = user.faqFive ? user.faqFive : "";
         break;
       case matchesField(label, "legally authorized to work in the country"):
-        node.value = "Yes";
+        node.value = user.faqFour ? user.faqFour : "";
         break;
       default:
         node.value = "";
@@ -131,7 +132,7 @@ function searchByLabel(node) {
   }
 }
 
-function enterInput(node) {
+function enterInput(node: any, user: User) {
   const fields = ["id", "name", "autocomplete", "className"];
 
   for (let i = 0; i < fields.length; i++) {
@@ -139,37 +140,36 @@ function enterInput(node) {
     if (node[field]) {
       switch (true) {
         case matchesField(node[field], "name"):
-          resolveName(node);
+          resolveName(node, user);
           break;
         case matchesField(node[field], "email"):
-          node.value = "email@gmail.com";
+          node.value = user.email;
           break;
         case matchesField(node[field], "password"):
-          node.value = "password";
+          node.value = user.password;
           break;
         case matchesField(node[field], "country"):
-          node.value = "United States";
+          node.value = user.country;
           break;
         case matchesField(node[field], "city"):
-          node.value = "My City";
+          node.value = user.city;
+          break;
         default:
-          searchByLabel(node);
+          searchByLabel(node, user);
           break;
       }
     }
   }
 }
 
-function findFields(node) {
+function findFields(node: any, user: User) {
   if (node.hasChildNodes()) {
     node.childNodes.forEach(findFields);
   } else {
-    enterInput(node);
+    enterInput(node, user);
   }
 }
 
-function main() {
-  findFields(nodes);
+export function fillFields(user: User) {
+  findFields(document.body, user);
 }
-
-main();
