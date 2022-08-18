@@ -10,8 +10,6 @@ interface Props {
 
 export const Setup: React.FC<Props> = ({ user }) => {
   function handleSubmit(user: User) {
-    let browser = window.browser ? window.browser : window.chrome;
-
     browser.storage.local.set({
       user,
     });

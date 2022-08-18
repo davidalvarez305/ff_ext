@@ -9,17 +9,16 @@ export const App = () => {
   const [showSetup, setShowSetup] = useState(false);
   const [user, setUser] = useState<User>(emptyUser);
 
-  console.log("HELLO FROM REACT!!!!");
-
   useEffect(() => {
-    /* window.browser
+    browser.storage.local
       .get("user")
       .then((data: any) => {
+        console.log(data);
         setUser(data);
       })
       .catch((err: Error) => {
         console.error(err);
-      }); */
+      });
   }, []);
 
   const styles = {
