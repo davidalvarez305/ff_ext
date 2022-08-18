@@ -14,8 +14,8 @@ export const Layout: React.FC<Props> = ({ children }) => {
           justifyContent: "center",
           alignItems: "center",
           flexDirection: "column",
-          height: "50vh",
-          width: "25vw",
+          height: "100%",
+          width: "100%",
           borderWidth: 3,
           borderRadius: 25,
         }}
