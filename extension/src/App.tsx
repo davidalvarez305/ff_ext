@@ -10,11 +10,6 @@ export const App = () => {
   const [showSetup, setShowSetup] = useState(false);
   const [user, setUser] = useState<User>(emptyUser);
 
-  function handleFillClicks() {
-    console.log("Filling fields...");
-    fillFields(user);
-  }
-
   useEffect(() => {
     browser.storage.local
       .get("user")
@@ -37,7 +32,7 @@ export const App = () => {
       <Layout>
         <Box sx={styles}>
           <TopButtons
-            leftButtonClick={() => handleFillClicks()}
+            leftButtonClick={() => fillFields(user)}
             rightButtonClick={() => setShowSetup((prev) => !prev)}
           />
           <Box sx={{ overflow: "scroll", height: "100vh" }}>
@@ -51,7 +46,7 @@ export const App = () => {
   return (
     <Layout>
       <TopButtons
-        leftButtonClick={() => handleFillClicks()}
+        leftButtonClick={() => fillFields(user)}
         rightButtonClick={() => setShowSetup((prev) => !prev)}
       />
       <Box sx={{ height: "100vh" }}>Yo</Box>
