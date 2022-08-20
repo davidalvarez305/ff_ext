@@ -1,10 +1,8 @@
-import { User } from "./utils";
-
-function matchesField(fieldName: string, key: string) {
-  return fieldName.toLowerCase().includes(key.toLowerCase());
+function matchesField(fieldName, key) {
+  return String(fieldName).toLowerCase().includes(String(key).toLowerCase());
 }
 
-function resolveName(node: any, user: User) {
+function resolveName(node, user) {
   const fields = ["id", "name", "autocomplete", "className"];
 
   fields.forEach((field) => {
@@ -17,7 +15,7 @@ function resolveName(node: any, user: User) {
           node.value = user.lastName;
           break;
         case matchesField(node[field], "full"):
-          node.value = user.firstName + user.lastName;
+          node.value = user.firstName + " " + user.lastName;
           break;
         case matchesField(node[field], "middle"):
           node.value = user.middleName;
@@ -33,13 +31,13 @@ function resolveName(node: any, user: User) {
                 node.value = user.lastName;
                 break;
               case matchesField(label, "full"):
-                node.value = user.firstName + user.lastName;
+                node.value = user.firstName + " " + user.lastName;
                 break;
               case matchesField(label, "middle"):
                 node.value = user.middleName;
                 break;
               default:
-                node.value = user.firstName + user.lastName;
+                node.value = user.firstName + " " + user.lastName;
             }
           }
       }
@@ -47,7 +45,7 @@ function resolveName(node: any, user: User) {
   });
 }
 
-function resolveCheckbox(node: any, user: User) {
+function resolveCheckbox(node, user) {
   if (node["labels"] && node["labels"][0]) {
     const label = node["labels"][0].innerText;
 
@@ -62,7 +60,7 @@ function resolveCheckbox(node: any, user: User) {
   }
 }
 
-function searchByLabel(node: any, user: User) {
+function searchByLabel(node, user) {
   if (node["type"] === "checkbox") {
     resolveCheckbox(node, user);
   }
@@ -153,7 +151,7 @@ function searchByLabel(node: any, user: User) {
   }
 }
 
-function enterInput(node: any, user: User) {
+function enterInput(node, user) {
   const fields = ["id", "name", "autocomplete", "className"];
 
   for (let i = 0; i < fields.length; i++) {
@@ -183,9 +181,9 @@ function enterInput(node: any, user: User) {
   }
 }
 
-function findFields(node: any, user: User) {
+function findFields(node, user) {
   if (node.hasChildNodes()) {
-    node.childNodes.forEach((n: any) => {
+    node.childNodes.forEach((n) => {
       findFields(n, user);
     });
   } else {
@@ -193,7 +191,13 @@ function findFields(node: any, user: User) {
   }
 }
 
-export function fillFields(user: User) {
-  console.log("Running...");
-  findFields(document.body, user);
-}
+browser.storage.local
+  .get("user")
+  .then((data) => {
+    if (data.user) {
+      findFields(document.body, data.user);
+    }
+  })
+  .catch((err) => {
+    console.error(err);
+  });
