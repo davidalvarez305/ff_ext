@@ -5,25 +5,46 @@ function matchesField(fieldName, key) {
 }
 
 function resolveName(node) {
-  if (node["labels"] && node["labels"][0]) {
-    const label = node["labels"][0].innerText;
-    switch (true) {
-      case matchesField(label, "first"):
-        node.value = "First Name";
-        break;
-      case matchesField(label, "last"):
-        node.value = "Last Name";
-        break;
-      case matchesField(label, "full"):
-        node.value = "Full Name";
-        break;
-      case matchesField(label, "middle"):
-        node.value = "Middle Name";
-        break;
-      default:
-        node.value = "Full Name";
+  const fields = ["id", "name", "autocomplete", "className"];
+
+  fields.forEach((field) => {
+    if (node[field]) {
+      switch (true) {
+        case matchesField(node[field], "first"):
+          node.value = "First ";
+          break;
+        case matchesField(node[field], "last"):
+          node.value = "Last";
+          break;
+        case matchesField(node[field], "full"):
+          node.value = "First " + "Last";
+          break;
+        case matchesField(node[field], "middle"):
+          node.value = "Middle";
+          break;
+        default:
+          if (node["labels"] && node["labels"][0]) {
+            const label = node["labels"][0].innerText;
+            switch (true) {
+              case matchesField(label, "first"):
+                node.value = "First ";
+                break;
+              case matchesField(label, "last"):
+                node.value = "Last";
+                break;
+              case matchesField(label, "full"):
+                node.value = "First " + "Last";
+                break;
+              case matchesField(label, "middle"):
+                node.value = "Middle";
+                break;
+              default:
+                node.value = "First " + "Last";
+            }
+          }
+      }
     }
-  }
+  });
 }
 
 function resolveCheckbox(node) {
@@ -169,6 +190,7 @@ function findFields(node) {
 }
 
 function main() {
+  console.log("Running....");
   findFields(nodes);
 }
 

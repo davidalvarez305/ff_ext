@@ -5,25 +5,46 @@ function matchesField(fieldName: string, key: string) {
 }
 
 function resolveName(node: any, user: User) {
-  if (node["labels"] && node["labels"][0]) {
-    const label = node["labels"][0].innerText;
-    switch (true) {
-      case matchesField(label, "first"):
-        node.value = user.firstName;
-        break;
-      case matchesField(label, "last"):
-        node.value = user.lastName;
-        break;
-      case matchesField(label, "full"):
-        node.value = user.firstName + user.lastName;
-        break;
-      case matchesField(label, "middle"):
-        node.value = user.middleName;
-        break;
-      default:
-        node.value = user.firstName + user.lastName;
+  const fields = ["id", "name", "autocomplete", "className"];
+
+  fields.forEach((field) => {
+    if (node[field]) {
+      switch (true) {
+        case matchesField(node[field], "first"):
+          node.value = user.firstName;
+          break;
+        case matchesField(node[field], "last"):
+          node.value = user.lastName;
+          break;
+        case matchesField(node[field], "full"):
+          node.value = user.firstName + user.lastName;
+          break;
+        case matchesField(node[field], "middle"):
+          node.value = user.middleName;
+          break;
+        default:
+          if (node["labels"] && node["labels"][0]) {
+            const label = node["labels"][0].innerText;
+            switch (true) {
+              case matchesField(label, "first"):
+                node.value = user.firstName;
+                break;
+              case matchesField(label, "last"):
+                node.value = user.lastName;
+                break;
+              case matchesField(label, "full"):
+                node.value = user.firstName + user.lastName;
+                break;
+              case matchesField(label, "middle"):
+                node.value = user.middleName;
+                break;
+              default:
+                node.value = user.firstName + user.lastName;
+            }
+          }
+      }
     }
-  }
+  });
 }
 
 function resolveCheckbox(node: any, user: User) {
@@ -164,12 +185,15 @@ function enterInput(node: any, user: User) {
 
 function findFields(node: any, user: User) {
   if (node.hasChildNodes()) {
-    node.childNodes.forEach(findFields);
+    node.childNodes.forEach((n: any) => {
+      findFields(n, user);
+    });
   } else {
     enterInput(node, user);
   }
 }
 
 export function fillFields(user: User) {
+  console.log("Running...");
   findFields(document.body, user);
 }
