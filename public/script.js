@@ -1,3 +1,134 @@
+const entries = [
+  {
+    input: "email",
+    prop: "email",
+  },
+  {
+    input: "password",
+    prop: "password",
+  },
+  {
+    input: "phone",
+    prop: "phoneNumber",
+  },
+  {
+    input: "tel",
+    prop: "phoneNumber",
+  },
+  {
+    input: "contact",
+    prop: "contactType",
+  },
+  {
+    input: "type",
+    prop: "contactType",
+  },
+  {
+    input: "address",
+    prop: "addressLineOne",
+  },
+  {
+    input: "residence",
+    prop: "addressLineOne",
+  },
+  {
+    input: "country",
+    prop: "country",
+  },
+  {
+    input: "city",
+    prop: "city",
+  },
+  {
+    input: "zip",
+    prop: "zip",
+  },
+  {
+    input: "postal",
+    prop: "zip",
+  },
+  {
+    input: "state",
+    prop: "state",
+  },
+  {
+    input: "linkedin",
+    prop: "linkedin",
+  },
+  {
+    input: "profile",
+    prop: "linkedin",
+  },
+  {
+    input: "github",
+    prop: "portfolio",
+  },
+  {
+    input: "website",
+    prop: "portfolio",
+  },
+  {
+    input: "portfolio",
+    prop: "portfolio",
+  },
+  {
+    input: "salary",
+    prop: "salary",
+  },
+  {
+    input: "compensation",
+    prop: "salary",
+  },
+  {
+    input: "how did you hear about this job",
+    prop: "faqOne",
+  },
+  {
+    input: "how did you hear about us",
+    prop: "faqOne",
+  },
+  {
+    input: "have you previously worked for",
+    prop: "faqTwo",
+  },
+  {
+    input: "are you currently an employee",
+    prop: "faqTwo",
+  },
+  {
+    input: "gender",
+    prop: "gender",
+  },
+  {
+    input: "hispanic",
+    prop: "race",
+  },
+  {
+    input: "race",
+    prop: "race",
+  },
+  {
+    input: "veteran",
+    prop: "veteranStatus",
+  },
+  {
+    input: "disability",
+    prop: "disabilityStatus",
+  },
+  {
+    input: "authorized to work in the united states",
+    prop: "faqFour",
+  },
+  {
+    input: "immigration sponsorship for employment visa",
+    prop: "faqFive",
+  },
+  {
+    input: "legally authorized to work in the country",
+    prop: "faqFour",
+  },
+];
+
 function matchesField(fieldName, key) {
   return String(fieldName).toLowerCase().includes(String(key).toLowerCase());
 }
@@ -66,87 +197,21 @@ function searchByLabel(node, user) {
   }
   if (node["labels"] && node["labels"][0]) {
     const label = node["labels"][0].innerText;
-    switch (true) {
-      case matchesField(label, "name"):
-        resolveName(node, user);
-        break;
-      case matchesField(label, "email"):
-        node.value = user.email;
-        break;
-      case matchesField(label, "password"):
-        node.value = user.password;
-        break;
-      case matchesField(label, "phone") || matchesField(label, "tel"):
-        node.value = user.phoneNumber;
-        break;
-      case matchesField(label, "contact") && matchesField(label, "type"):
-        node.value = user.contactType;
-        break;
-      case matchesField(label, "address") || matchesField(label, "residence"):
-        node.value = user.addressLineOne;
-        break;
-      case matchesField(label, "current location"):
-        node.value = `${user.city}, ${user.state}, ${user.country}`;
-        break;
-      case matchesField(label, "country"):
-        node.value = user.country;
-        break;
-      case matchesField(label, "city"):
-        node.value = user.city;
-        break;
-      case matchesField(label, "zip") || matchesField(label, "postal"):
-        node.value = user.zip;
-        break;
-      case matchesField(label, "state"):
-        node.value = user.state;
-        break;
-      case matchesField(label, "location"):
-        node.value = `${user.city}, ${user.state}`;
-        break;
-      case matchesField(label, "linkedin") || matchesField(label, "profile"):
-        node.value = user.linkedin;
-        break;
-      case matchesField(label, "github") ||
-        matchesField(label, "website") ||
-        matchesField(label, "portfolio"):
-        node.value = user.portfolio;
-        break;
-      case matchesField(label, "salary") || matchesField(label, "compensation"):
-        node.value = user.salary;
-        break;
-      case matchesField(label, "how did you hear about this job"):
-        node.value = user.faqOne ? user.faqOne : "";
-        break;
-      case matchesField(label, "how did you hear about us"):
-        node.value = user.faqOne ? user.faqOne : "";
-        break;
-      case matchesField(label, "have you previously worked for") ||
-        matchesField(label, "are you currently an employee"):
-        node.value = user.faqTwo ? user.faqTwo : "";
-        break;
-      case matchesField(label, "gender"):
-        node.value = user.gender;
-        break;
-      case matchesField(label, "hispanic") || matchesField(label, "race"):
-        node.value = user.race;
-        break;
-      case matchesField(label, "veteran"):
-        node.value = user.veteranStatus;
-        break;
-      case matchesField(label, "disability"):
-        node.value = user.disabilityStatus;
-        break;
-      case matchesField(label, "authorized to work in the united states"):
-        node.value = user.faqFour ? user.faqFour : "";
-        break;
-      case matchesField(label, "immigration sponsorship for employment visa"):
-        node.value = user.faqFive ? user.faqFive : "";
-        break;
-      case matchesField(label, "legally authorized to work in the country"):
-        node.value = user.faqFour ? user.faqFour : "";
-        break;
-      default:
-        node.value = "";
+    for (let i = 0; i < entries.length; i++) {
+      switch (true) {
+        case matchesField(label, "name"):
+          resolveName(node, user);
+          break;
+        case matchesField(label, "current location"):
+          node.value = `${user.city}, ${user.state}, ${user.country}`;
+          break;
+        case matchesField(label, "location"):
+          node.value = `${user.city}, ${user.state}`;
+          break;
+        case matchesField(label, entries[i].input):
+          node.value = user[entries[i].prop];
+          break;
+      }
     }
   }
 }
@@ -157,28 +222,22 @@ function enterInput(node, user) {
   for (let i = 0; i < fields.length; i++) {
     const field = fields[i];
     if (node[field]) {
-      switch (true) {
-        case matchesField(node[field], "name"):
-          resolveName(node, user);
-          break;
-        case matchesField(node[field], "email"):
-          node.value = user.email;
-          break;
-        case matchesField(node[field], "password"):
-          node.value = user.password;
-          break;
-        case matchesField(node[field], "country"):
-          node.value = user.country;
-          break;
-        case matchesField(node[field], "city"):
-          node.value = user.city;
-          break;
-        default:
-          searchByLabel(node, user);
-          break;
+      for (let n = 0; n < entries.length; n++) {
+        switch (true) {
+          case matchesField(node[field], "name"):
+            resolveName(node, user);
+            break;
+          case matchesField(node[field], "location"):
+            node.value = `${user.city}, ${user.state}`;
+            break;
+          case matchesField(node[field], entries[n].input):
+            node.value = user[entries[n].prop];
+            break;
+        }
       }
     }
   }
+  searchByLabel(node, user);
 }
 
 function findFields(node, user) {
