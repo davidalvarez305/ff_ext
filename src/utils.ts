@@ -30,10 +30,6 @@ export const fields = [
     name: "race",
   },
   {
-    label: "Sex",
-    name: "sex",
-  },
-  {
     label: "Gender",
     name: "gender",
   },
@@ -112,8 +108,8 @@ export const fields = [
     name: "veteranStatus",
   },
   {
-    label: "FAQ #4: Are you authorized to work in the United States?",
-    name: "faqFour",
+    label: "Are you authorized to work in the United States?",
+    name: "workAuthorization",
   },
   {
     label: "FAQ #5: Will you need immigration sponsorship for employment visa?",
@@ -144,9 +140,8 @@ export type User = {
   salary: string;
   faqOne?: string;
   faqTwo?: string;
-  faqFour?: string;
+  workAuthorization: string;
   faqFive?: string;
-  sex: string;
   gender: string;
   race: string;
   veteranStatus: string;
@@ -161,7 +156,6 @@ export const emptyUser = {
   middleName: "",
   ethnicity: "",
   race: "",
-  sex: "",
   gender: "",
   password: "",
   contactType: "",
@@ -179,8 +173,12 @@ export const emptyUser = {
   salary: "",
   faqOne: "",
   faqTwo: "",
-  faqFour: "",
+  workAuthorization: "",
   faqFive: "",
   veteranStatus: "",
   disabilityStatus: "",
+};
+
+export const capitalizeFirstLetter = (str: string) => {
+  return str.charAt(0).toUpperCase() + str.slice(1);
 };

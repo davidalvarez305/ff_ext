@@ -117,15 +117,19 @@ const entries = [
   },
   {
     input: "authorized to work in the united states",
-    prop: "faqFour",
+    prop: "workAuthorization",
+  },
+  {
+    input: "legally authorized to work in the country",
+    prop: "workAuthorization",
+  },
+  {
+    input: "permanent work authorization",
+    prop: "workAuthorization",
   },
   {
     input: "immigration sponsorship for employment visa",
     prop: "faqFive",
-  },
-  {
-    input: "legally authorized to work in the country",
-    prop: "faqFour",
   },
 ];
 
