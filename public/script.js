@@ -88,12 +88,12 @@ const entries = [
     prop: "applicationReferral",
   },
   {
-    input: "have you previously worked for",
-    prop: "faqTwo",
+    input: "current company",
+    prop: "currentCompany",
   },
   {
-    input: "are you currently an employee",
-    prop: "faqTwo",
+    input: "current (or most recent) company",
+    prop: "currentCompany",
   },
   {
     input: "gender",
@@ -124,12 +124,24 @@ const entries = [
     prop: "workAuthorization",
   },
   {
+    input: "authorized to work",
+    prop: "workAuthorization",
+  },
+  {
     input: "permanent work authorization",
     prop: "workAuthorization",
   },
   {
     input: "immigration sponsorship for employment visa",
-    prop: "faqFive",
+    prop: "immigrationSponsorship",
+  },
+  {
+    input: "require visa sponsorship",
+    prop: "immigrationSponsorship",
+  },
+  {
+    input: "require sponsorship for employment visa",
+    prop: "immigrationSponsorship",
   },
 ];
 
@@ -195,9 +207,31 @@ function resolveCheckbox(node, user) {
   }
 }
 
+function resolveRadioButtons(node, user) {
+  if (node["labels"] && node["labels"][0]) {
+    const label = node["labels"][0].innerText;
+
+    switch (true) {
+      case matchesField(label, "unrestricted right to work"):
+        if (node.value === user.workAuthorization) {
+          node.checked = true;
+        }
+        break;
+      case matchesField(label, "need sponsorship"):
+        if (node.value === user.immigrationSponsorship) {
+          node.checked = true;
+        }
+        break;
+    }
+  }
+}
+
 function searchByLabel(node, user) {
   if (node["type"] === "checkbox") {
     resolveCheckbox(node, user);
+  }
+  if (node["type"] === "radio") {
+    resolveRadioButtons(node, user);
   }
   if (node["labels"] && node["labels"][0]) {
     const label = node["labels"][0].innerText;

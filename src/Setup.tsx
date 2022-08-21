@@ -28,7 +28,23 @@ export const Setup: React.FC<Props> = ({ user }) => {
         >
           {fields.map((field) => {
             switch (field.name) {
-              case "workAuthorization":
+              case "race":
+                return (
+                  <SelectComponent
+                    defaultValue={user[field.name]}
+                    options={[
+                      "Hispanic or Latino",
+                      "White (Not Hispanic or Latino)",
+                      "Black or African America (Not Hispanic or Latino)",
+                      "Native Hawaiian or Other Pacific Islander (Not Hispanic or Latino)",
+                      "Asian (Not Hispanic or Latino)",
+                      "American Indian or Alaska Native (Not Hispanic or Latino)",
+                      "Two or More Races (Not Hispanic or Latino)",
+                    ]}
+                    {...field}
+                  />
+                );
+              case "workAuthorization" || "immigrationSponsorship":
                 return (
                   <SelectComponent
                     defaultValue={user[field.name]}

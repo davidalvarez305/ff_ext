@@ -92,8 +92,8 @@ export const fields = [
     name: "applicationReferral",
   },
   {
-    label: "Have you previously worked for XYZ Company?",
-    name: "faqTwo",
+    label: "Current Company",
+    name: "currentCompany",
   },
   {
     label: "Do you have a disability?",
@@ -109,7 +109,7 @@ export const fields = [
   },
   {
     label: "Will you need immigration sponsorship for employment visa?",
-    name: "faqFive",
+    name: "immigrationSponsorship",
   },
 ];
 
@@ -135,9 +135,9 @@ export type User = {
   website: string;
   salary: string;
   applicationReferral: string;
-  faqTwo?: string;
+  currentCompany: string;
   workAuthorization: string;
-  faqFive?: string;
+  immigrationSponsorship: string;
   gender: string;
   race: string;
   veteranStatus: string;
@@ -168,9 +168,9 @@ export const emptyUser = {
   website: "",
   salary: "",
   applicationReferral: "",
-  faqTwo: "",
+  currentCompany: "",
   workAuthorization: "",
-  faqFive: "",
+  immigrationSponsorship: "",
   veteranStatus: "",
   disabilityStatus: "",
 };
