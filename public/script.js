@@ -81,11 +81,11 @@ const entries = [
   },
   {
     input: "how did you hear about this job",
-    prop: "faqOne",
+    prop: "applicationReferral",
   },
   {
     input: "how did you hear about us",
-    prop: "faqOne",
+    prop: "applicationReferral",
   },
   {
     input: "have you previously worked for",
@@ -101,7 +101,7 @@ const entries = [
   },
   {
     input: "hispanic",
-    prop: "race",
+    prop: "isHispanic",
   },
   {
     input: "race",

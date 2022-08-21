@@ -15,16 +15,22 @@ interface Props {
   options: Array<any>;
   name: string;
   label: string;
+  defaultValue: string;
 }
 
-const SelectComponent: React.FC<Props> = ({ options, name, label }) => {
+const SelectComponent: React.FC<Props> = ({
+  options,
+  name,
+  label,
+  defaultValue,
+}) => {
   const { setFieldValue } = useFormikContext();
 
   const [field, meta] = useField(name);
 
   const [selectedValue, setSelectedValue] = useState<null | SelectType>({
-    value: "",
-    label: "",
+    value: defaultValue,
+    label: capitalizeFirstLetter(defaultValue),
   });
 
   return (

@@ -22,10 +22,6 @@ export const fields = [
     name: "middleName",
   },
   {
-    label: "Ethnicity",
-    name: "ethnicity",
-  },
-  {
     label: "Race",
     name: "race",
   },
@@ -92,15 +88,15 @@ export const fields = [
     name: "salary",
   },
   {
-    label: "FAQ #1: How did you hear about us?",
-    name: "faqOne",
+    label: "How did you hear about us?",
+    name: "applicationReferral",
   },
   {
-    label: "FAQ #2: Have you previously worked for XYZ Company?",
+    label: "Have you previously worked for XYZ Company?",
     name: "faqTwo",
   },
   {
-    label: "FAQ #3: Do you have a disability?",
+    label: "Do you have a disability?",
     name: "disabilityStatus",
   },
   {
@@ -112,7 +108,7 @@ export const fields = [
     name: "workAuthorization",
   },
   {
-    label: "FAQ #5: Will you need immigration sponsorship for employment visa?",
+    label: "Will you need immigration sponsorship for employment visa?",
     name: "faqFive",
   },
 ];
@@ -123,7 +119,7 @@ export type User = {
   email: string;
   phoneNumber: number;
   middleName: string;
-  ethnicity: string;
+  isHispanic: string;
   password: string;
   contactType: string;
   addressLineOne: string;
@@ -138,7 +134,7 @@ export type User = {
   portfolio: string;
   website: string;
   salary: string;
-  faqOne?: string;
+  applicationReferral: string;
   faqTwo?: string;
   workAuthorization: string;
   faqFive?: string;
@@ -154,7 +150,7 @@ export const emptyUser = {
   email: "",
   phoneNumber: 0,
   middleName: "",
-  ethnicity: "",
+  isHispanic: "",
   race: "",
   gender: "",
   password: "",
@@ -171,7 +167,7 @@ export const emptyUser = {
   portfolio: "",
   website: "",
   salary: "",
-  faqOne: "",
+  applicationReferral: "",
   faqTwo: "",
   workAuthorization: "",
   faqFive: "",
