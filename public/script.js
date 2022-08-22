@@ -143,7 +143,65 @@ const entries = [
     input: "require sponsorship for employment visa",
     prop: "immigrationSponsorship",
   },
+  {
+    input: "work visa",
+    prop: "immigrationSponsorship",
+  },
 ];
+
+const stateAbbreviations = {
+  Alabama: "AL",
+  Alaska: "AK",
+  Arizona: "AZ",
+  Arkansas: "AR",
+  California: "CA",
+  Colorado: "CO",
+  Connecticut: "CT",
+  Delaware: "DE",
+  "District of Columbia": "DC",
+  Florida: "FL",
+  Georgia: "GA",
+  Hawaii: "HI",
+  Idaho: "ID",
+  Illinois: "IL",
+  Indiana: "IN",
+  Iowa: "IA",
+  Kansas: "KS",
+  Kentucky: "KY",
+  Louisiana: "LA",
+  Maine: "ME",
+  Maryland: "MD",
+  Massachusetts: "MA",
+  Michigan: "MI",
+  Minnesota: "MN",
+  Mississippi: "MS",
+  Missouri: "MO",
+  Montana: "MT",
+  Nebraska: "NE",
+  Nevada: "NV",
+  "New Hampshire": "NH",
+  "New Jersey": "NJ",
+  "New Mexico": "NM",
+  "New York": "NY",
+  "North Carolina": "NC",
+  "North Dakota": "ND",
+  Ohio: "OH",
+  Oklahoma: "OK",
+  Oregon: "OR",
+  Pennsylvania: "PA",
+  "Rhode Island": "RI",
+  "South Carolina": "SC",
+  "South Dakota": "SD",
+  Tennessee: "TN",
+  Texas: "TX",
+  Utah: "UT",
+  Vermont: "VT",
+  Virginia: "VA",
+  Washington: "WA",
+  "West Virginia": "WV",
+  Wisconsin: "WI",
+  Wyoming: "WY",
+};
 
 function matchesField(fieldName, key) {
   return String(fieldName).toLowerCase().includes(String(key).toLowerCase());
@@ -210,18 +268,23 @@ function resolveCheckbox(node, user) {
 function resolveRadioButtons(node, user) {
   if (node["labels"] && node["labels"][0]) {
     const label = node["labels"][0].innerText;
-
-    switch (true) {
-      case matchesField(label, "unrestricted right to work"):
-        if (node.value === user.workAuthorization) {
-          node.checked = true;
-        }
-        break;
-      case matchesField(label, "need sponsorship"):
-        if (node.value === user.immigrationSponsorship) {
-          node.checked = true;
-        }
-        break;
+    for (let i = 0; i < entries.length; i++) {
+      switch (true) {
+        case matchesField(label, "unrestricted right to work"):
+          if (node.value === user.workAuthorization) {
+            node.checked = true;
+          }
+          break;
+        case matchesField(label, "need sponsorship"):
+          if (node.value === user.immigrationSponsorship) {
+            node.checked = true;
+          }
+          break;
+        default:
+          if (matchesField(node.value, user[entries[i].prop])) {
+            node.checked = true;
+          }
+      }
     }
   }
 }
@@ -245,6 +308,12 @@ function searchByLabel(node, user) {
           break;
         case matchesField(label, "location"):
           node.value = `${user.city}, ${user.state}`;
+          break;
+        case matchesField(label, "state"):
+          node.value = user.state;
+          if (node.value === "") {
+            node.value = stateAbbreviations[user.state];
+          }
           break;
         case matchesField(label, entries[i].input):
           node.value = user[entries[i].prop];

@@ -1,7 +1,7 @@
 import React from "react";
 import { Form, Formik } from "formik";
 import { SimpleInputField } from "./SimpleInputField";
-import { fields, User } from "./utils";
+import { fields, stateAbbreviations, User } from "./utils";
 import { Button, Flex } from "@chakra-ui/react";
 import SelectComponent from "./SelectComponent";
 
@@ -57,6 +57,14 @@ export const Setup: React.FC<Props> = ({ user }) => {
                   <SelectComponent
                     defaultValue={user[field.name]}
                     options={["Yes", "No", "Decline To Self Identify"]}
+                    {...field}
+                  />
+                );
+              case "state":
+                return (
+                  <SelectComponent
+                    defaultValue={user[field.name]}
+                    options={Object.keys(stateAbbreviations)}
                     {...field}
                   />
                 );

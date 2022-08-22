@@ -52,11 +52,20 @@ export const App = () => {
 
   return (
     <Layout>
-      <TopButtons
-        leftButtonClick={() => handleScript()}
-        rightButtonClick={() => setShowSetup((prev) => !prev)}
-      />
-      <Box sx={{ height: "100vh" }}>Yo</Box>
+      <Box
+        sx={{
+          display: "flex",
+          justifyContent: "center",
+          alignItems: "center",
+          height: "100vh",
+          width: "100%",
+        }}
+      >
+        <TopButtons
+          leftButtonClick={() => handleScript()}
+          rightButtonClick={() => setShowSetup((prev) => !prev)}
+        />
+      </Box>
     </Layout>
   );
 };
