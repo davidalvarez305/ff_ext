@@ -111,6 +111,28 @@ export const fields = [
     label: "Will you need immigration sponsorship for employment visa?",
     name: "immigrationSponsorship",
   },
+  {
+    label: "School",
+    name: "school",
+  },
+  {
+    label: "Degree",
+    name: "degree",
+  },
+  {
+    label: "Discipline",
+    name: "discipline",
+  },
+  {
+    label: "University Start Date",
+    name: "universityStartDate",
+    type: "number",
+  },
+  {
+    label: "University End Date",
+    name: "universityEndDate",
+    type: "number",
+  },
 ];
 
 export type User = {
@@ -142,6 +164,11 @@ export type User = {
   race: string;
   veteranStatus: string;
   disabilityStatus: string;
+  school: string;
+  degree: string;
+  discipline: string;
+  universityStartDate: number;
+  universityEndDate: number;
 };
 
 export const emptyUser = {
@@ -173,6 +200,11 @@ export const emptyUser = {
   immigrationSponsorship: "",
   veteranStatus: "",
   disabilityStatus: "",
+  school: "",
+  degree: "",
+  discipline: "",
+  universityStartDate: 0,
+  universityEndDate: 0,
 };
 
 export const capitalizeFirstLetter = (str: string) => {

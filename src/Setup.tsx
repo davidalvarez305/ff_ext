@@ -108,6 +108,25 @@ export const Setup: React.FC<Props> = ({ user }) => {
                     {...field}
                   />
                 );
+              case "degree":
+                return (
+                  <SelectComponent
+                    defaultValue={user[field.name]}
+                    options={[
+                      "High School Diploma",
+                      "Associate's Degree",
+                      "Bachelor's Degree",
+                      "Master's Degree",
+                      "Master of Business Administration (M.B.A)",
+                      "Juris Doctor (J.D.)",
+                      "Doctor of Medicine (M.D.)",
+                      "Doctor of Philosophy (Ph.D.)",
+                      "Engineer's Degree",
+                      "Other",
+                    ]}
+                    {...field}
+                  />
+                );
               default:
                 return <SimpleInputField {...field} />;
             }
