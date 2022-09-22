@@ -17,6 +17,15 @@ export const App = () => {
     });
   }
 
+  function sendRequest() {
+    fetch("http://localhost:5000", {
+      method: "POST",
+      body: JSON.stringify({
+        data: "hey!",
+      }),
+    });
+  }
+
   useEffect(() => {
     browser.storage.local
       .get("user")
@@ -39,8 +48,8 @@ export const App = () => {
       <Layout>
         <Box sx={styles}>
           <TopButtons
-            leftButtonClick={() => handleScript()}
             rightButtonClick={() => setShowSetup((prev) => !prev)}
+            rightButton={"Home"}
           />
           <Box sx={{ overflow: "scroll", height: "100vh" }}>
             <Setup user={user} />
@@ -62,7 +71,9 @@ export const App = () => {
         }}
       >
         <TopButtons
-          leftButtonClick={() => handleScript()}
+          rightButton={"Setup"}
+          leftButton={"Request"}
+          leftButtonClick={() => sendRequest()}
           rightButtonClick={() => setShowSetup((prev) => !prev)}
         />
       </Box>

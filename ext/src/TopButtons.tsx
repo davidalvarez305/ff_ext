@@ -2,13 +2,17 @@ import { Box, Button } from "@chakra-ui/react";
 import React from "react";
 
 interface Props {
-  rightButtonClick: () => void;
-  leftButtonClick: () => void;
+  rightButtonClick?: () => void;
+  leftButtonClick?: () => void;
+  leftButton?: string;
+  rightButton?: string;
 }
 
 export const TopButtons: React.FC<Props> = ({
   rightButtonClick,
   leftButtonClick,
+  leftButton,
+  rightButton,
 }) => {
   return (
     <Box
@@ -21,22 +25,26 @@ export const TopButtons: React.FC<Props> = ({
         my: 2,
       }}
     >
-      <Button
-        variant={"outline"}
-        colorScheme={"blue"}
-        width={75}
-        onClick={leftButtonClick}
-      >
-        Fill
-      </Button>
-      <Button
-        variant={"outline"}
-        colorScheme={"blue"}
-        width={75}
-        onClick={rightButtonClick}
-      >
-        Setup
-      </Button>
+      {leftButtonClick && leftButton && (
+        <Button
+          variant={"outline"}
+          colorScheme={"green"}
+          width={75}
+          onClick={leftButtonClick}
+        >
+          {leftButton}
+        </Button>
+      )}
+      {rightButton && rightButtonClick && (
+        <Button
+          variant={"outline"}
+          colorScheme={"blue"}
+          width={75}
+          onClick={rightButtonClick}
+        >
+          {rightButton}
+        </Button>
+      )}
     </Box>
   );
 };

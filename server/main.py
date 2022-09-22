@@ -1,7 +1,14 @@
 from flask import Flask
+from dotenv import load_dotenv
+from flask import request
+from bot import execute
 
 app = Flask(__name__)
 
-@app.route("/", method='POST')
+@app.route('/', methods=['POST'])
 def main():
-    return "<p>Hello, World!</p>"
+    load_dotenv()
+    data = request.get_json(force=True)
+    print(data)
+    execute()
+    return request.args

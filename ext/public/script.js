@@ -208,22 +208,37 @@ function matchesField(fieldName, key) {
 }
 
 function resolveName(node, user) {
-  const fields = ["id", "name", "autocomplete", "className"];
+  const fields = ["id", "name", "className"];
+
+  let results = [];
 
   fields.forEach((field) => {
     if (node[field]) {
+      let data = {};
       switch (true) {
         case matchesField(node[field], "first"):
-          node.value = user.firstName;
+          data["field"] = field;
+          data["name"] = node[field];
+          data["data"] = user.firstName;
+          results.push(data);
           break;
         case matchesField(node[field], "last"):
-          node.value = user.lastName;
+          data["field"] = field;
+          data["name"] = node[field];
+          data["data"] = user.lastName;
+          results.push(data);
           break;
         case matchesField(node[field], "full"):
-          node.value = user.firstName + " " + user.lastName;
+          data["field"] = field;
+          data["name"] = node[field];
+          data["data"] = user.firstName + " " + user.lastName;
+          results.push(data);
           break;
         case matchesField(node[field], "middle"):
-          node.value = user.middleName;
+          data["field"] = field;
+          data["name"] = node[field];
+          data["data"] = user.middleName;
+          results.push(data);
           break;
         default:
           if (node["labels"] && node["labels"][0]) {
