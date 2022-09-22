@@ -10,5 +10,4 @@ def main():
     load_dotenv()
     data = request.get_json(force=True)
     print(data)
-    execute()
     return request.args

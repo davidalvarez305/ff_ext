@@ -245,121 +245,177 @@ function resolveName(node, user) {
             const label = node["labels"][0].innerText;
             switch (true) {
               case matchesField(label, "first"):
-                node.value = user.firstName;
+                data["field"] = field;
+                data["name"] = node[field];
+                data["data"] = user.firstName;
+                results.push(data);
                 break;
               case matchesField(label, "last"):
-                node.value = user.lastName;
+                data["field"] = field;
+                data["name"] = node[field];
+                data["data"] = user.lastName;
+                results.push(data);
                 break;
               case matchesField(label, "full"):
-                node.value = user.firstName + " " + user.lastName;
+                data["field"] = field;
+                data["name"] = node[field];
+                data["data"] = user.firstName + " " + user.lastName;
+                results.push(data);
                 break;
               case matchesField(label, "middle"):
-                node.value = user.middleName;
+                data["field"] = field;
+                data["name"] = node[field];
+                data["data"] = user.middleName;
+                results.push(data);
                 break;
               default:
-                node.value = user.firstName + " " + user.lastName;
+                data["field"] = field;
+                data["name"] = node[field];
+                data["data"] = user.firstName + " " + user.lastName;
+                results.push(data);
             }
           }
       }
     }
   });
+  return results;
 }
 
 function resolveCheckbox(node, user) {
+  let results = [];
   if (node["labels"] && node["labels"][0]) {
     const label = node["labels"][0].innerText;
-
+    let data = {};
     switch (true) {
       case matchesField(label, "latino"):
-        node.checked = user.ethnicity === "latino";
+        data["field"] = field;
+        data["name"] = node[field];
+        data["data"] = true;
+        results.push(data);
         break;
       case matchesField(label, "male") && !matchesField(label, "female"):
-        node.checked = user.sex === "male";
+        data["field"] = field;
+        data["name"] = node[field];
+        data["data"] = true;
+        results.push(data);
         break;
     }
   }
+  return results;
 }
 
 function resolveRadioButtons(node, user) {
+  let results = [];
   if (node["labels"] && node["labels"][0]) {
     const label = node["labels"][0].innerText;
     for (let i = 0; i < entries.length; i++) {
+      let data = {};
       switch (true) {
         case matchesField(label, "unrestricted right to work"):
-          if (node.value === user.workAuthorization) {
-            node.checked = true;
-          }
+          data["field"] = field;
+          data["name"] = node[field];
+          data["data"] = true;
+          results.push(data);
           break;
         case matchesField(label, "need sponsorship"):
-          if (node.value === user.immigrationSponsorship) {
-            node.checked = true;
-          }
+          data["field"] = field;
+          data["name"] = node[field];
+          data["data"] = true;
+          results.push(data);
           break;
         default:
-          if (matchesField(node.value, user[entries[i].prop])) {
-            node.checked = true;
-          }
+          data["field"] = field;
+          data["name"] = node[field];
+          data["data"] = true;
+          results.push(data);
       }
     }
   }
+  return results;
 }
 
 function searchByLabel(node, user) {
+  let results = [];
   if (node["type"] === "checkbox") {
-    resolveCheckbox(node, user);
+    let res = resolveCheckbox(node, user);
+    results = [...results, ...res];
   }
   if (node["type"] === "radio") {
-    resolveRadioButtons(node, user);
+    let res = resolveRadioButtons(node, user);
+    results = [...results, ...res];
   }
   if (node["labels"] && node["labels"][0]) {
     const label = node["labels"][0].innerText;
     for (let i = 0; i < entries.length; i++) {
+      let data = {};
       switch (true) {
         case matchesField(label, "name"):
-          resolveName(node, user);
+          let res = resolveName(node, user);
+          results = [...results, ...res];
           break;
         case matchesField(label, "current location"):
-          node.value = `${user.city}, ${user.state}, ${user.country}`;
+          data["field"] = field;
+          data["name"] = node[field];
+          data["data"] = `${user.city}, ${user.state}, ${user.country}`;
+          results.push(data);
           break;
         case matchesField(label, "location"):
-          node.value = `${user.city}, ${user.state}`;
+          data["field"] = field;
+          data["name"] = node[field];
+          data["data"] = `${user.city}, ${user.state}`;
+          results.push(data);
           break;
         case matchesField(label, "state"):
-          node.value = user.state;
-          if (node.value === "") {
-            node.value = stateAbbreviations[user.state];
-          }
+          data["field"] = field;
+          data["name"] = node[field];
+          data["data"] = stateAbbreviations[user.state];
+          results.push(data);
           break;
         case matchesField(label, entries[i].input):
-          node.value = user[entries[i].prop];
+          data["field"] = field;
+          data["name"] = node[field];
+          data["data"] = user[entries[i].prop];
+          results.push(data);
           break;
       }
     }
   }
+  return results;
 }
 
 function enterInput(node, user) {
   const fields = ["id", "name", "autocomplete", "className"];
+  let results = [];
 
   for (let i = 0; i < fields.length; i++) {
     const field = fields[i];
     if (node[field]) {
       for (let n = 0; n < entries.length; n++) {
+        let data = {};
         switch (true) {
           case matchesField(node[field], "name"):
-            resolveName(node, user);
+            let res = resolveName(node, user);
+            results = [...results, ...res];
             break;
           case matchesField(node[field], "location"):
-            node.value = `${user.city}, ${user.state}`;
+            data["field"] = field;
+            data["name"] = node[field];
+            data["data"] = `${user.city}, ${user.state}`;
+            results.push(data);
             break;
           case matchesField(node[field], entries[n].input):
-            node.value = user[entries[n].prop];
+            data["field"] = field;
+            data["name"] = node[field];
+            data["data"] = user[entries[n].prop];
+            results.push(data);
             break;
         }
       }
     }
   }
-  searchByLabel(node, user);
+  let searchByLabelResults = searchByLabel(node, user);
+  results = [...results, ...searchByLabelResults];
+  return results;
 }
 
 function findFields(node, user) {
@@ -368,7 +424,9 @@ function findFields(node, user) {
       findFields(n, user);
     });
   } else {
-    enterInput(node, user);
+    let data = enterInput(node, user);
+    console.log(data);
+    return data;
   }
 }
 
@@ -376,7 +434,14 @@ browser.storage.local
   .get("user")
   .then((data) => {
     if (data.user) {
-      findFields(document.body, data.user);
+      // let results = findFields(document.body, data.user);
+      fetch("http://localhost:5000", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ hey: "hi~!" }),
+      });
     }
   })
   .catch((err) => {

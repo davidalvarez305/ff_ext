@@ -17,15 +17,6 @@ export const App = () => {
     });
   }
 
-  function sendRequest() {
-    fetch("http://localhost:5000", {
-      method: "POST",
-      body: JSON.stringify({
-        data: "hey!",
-      }),
-    });
-  }
-
   useEffect(() => {
     browser.storage.local
       .get("user")
@@ -73,7 +64,7 @@ export const App = () => {
         <TopButtons
           rightButton={"Setup"}
           leftButton={"Request"}
-          leftButtonClick={() => sendRequest()}
+          leftButtonClick={() => handleScript()}
           rightButtonClick={() => setShowSetup((prev) => !prev)}
         />
       </Box>
