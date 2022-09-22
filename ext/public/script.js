@@ -437,10 +437,9 @@ browser.storage.local
       // let results = findFields(document.body, data.user);
       fetch("http://localhost:5000", {
         method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
         body: JSON.stringify({ hey: "hi~!" }),
+      }).catch((err) => {
+        alert(err.message);
       });
     }
   })
