@@ -327,16 +327,10 @@ function resolveRadioButtons(node, user) {
   }
 }
 
-function searchByLabel(node, user) {
-  if (node["type"] === "checkbox") {
-    resolveCheckbox(node, user);
-  }
-  if (node["type"] === "radio") {
-    resolveRadioButtons(node, user);
-  }
+function checkByLabel(node, user) {
+  let data = {};
   if (node["labels"] && node["labels"][0]) {
     const label = node["labels"][0].innerText;
-    let data = {};
     entries.some((entry) => {
       switch (true) {
         case matchesField(label, "name"):
@@ -364,7 +358,7 @@ function searchByLabel(node, user) {
   }
 }
 
-function enterInput(node, user) {
+function checkByField(node, user) {
   let data = {};
   fields.some((field) => {
     if (node[field]) {
@@ -386,9 +380,7 @@ function enterInput(node, user) {
       return data.hasOwnProperty("data");
     }
   });
-  if (!data.hasOwnProperty("data")) {
-    searchByLabel(node, user);
-  }
+  return data;
 }
 
 function findFields(node, user) {
@@ -397,7 +389,17 @@ function findFields(node, user) {
       findFields(n, user);
     });
   } else {
-    enterInput(node, user);
+    let data = {};
+    while (!data.hasOwnProperty("data")) {
+      if (node["type"] === "checkbox") {
+        data = resolveCheckbox(node, user);
+      }
+      if (node["type"] === "radio") {
+        data = resolveRadioButtons(node, user);
+      }
+      data = checkByField(node, user);
+      data = checkByLabel(node, user);
+    }
   }
 }
 
