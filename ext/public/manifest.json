@@ -9,7 +9,14 @@
       "all_frames": true
     }
   ],
-  "permissions": ["storage", "unlimitedStorage", "tabs", "activeTab"],
+  "permissions": [
+    "storage",
+    "unlimitedStorage",
+    "tabs",
+    "activeTab",
+    "http://*/",
+    "https://*/"
+  ],
   "icons": {
     "48": "48icon.png",
     "96": "96icon.png"

@@ -203,18 +203,32 @@ const stateAbbreviations = {
   Wyoming: "WY",
 };
 
+const fields = ["id", "name", "className"];
+
+let results = [];
+
+function getField(node, val) {
+  let data = {};
+  fields.some((field) => {
+    const check = node.hasAttribute(field);
+    if (check) {
+      data["field"] = field;
+      data["name"] = node[field];
+      data["data"] = val;
+    }
+    return check;
+  });
+  return data;
+}
+
 function matchesField(fieldName, key) {
   return String(fieldName).toLowerCase().includes(String(key).toLowerCase());
 }
 
 function resolveName(node, user) {
-  const fields = ["id", "name", "className"];
-
-  let results = [];
-
-  fields.forEach((field) => {
+  let data = {};
+  fields.some((field) => {
     if (node[field]) {
-      let data = {};
       switch (true) {
         case matchesField(node[field], "first"):
           data["field"] = field;
@@ -245,177 +259,136 @@ function resolveName(node, user) {
             const label = node["labels"][0].innerText;
             switch (true) {
               case matchesField(label, "first"):
-                data["field"] = field;
-                data["name"] = node[field];
-                data["data"] = user.firstName;
+                data = getField(node, user.firstName);
                 results.push(data);
                 break;
               case matchesField(label, "last"):
-                data["field"] = field;
-                data["name"] = node[field];
-                data["data"] = user.lastName;
+                data = getField(node, user.lastName);
                 results.push(data);
                 break;
               case matchesField(label, "full"):
-                data["field"] = field;
-                data["name"] = node[field];
-                data["data"] = user.firstName + " " + user.lastName;
+                data = getField(node, user.firstName + " " + user.lastName);
                 results.push(data);
                 break;
               case matchesField(label, "middle"):
-                data["field"] = field;
-                data["name"] = node[field];
-                data["data"] = user.middleName;
+                data = getField(node, user.middleName);
                 results.push(data);
                 break;
               default:
-                data["field"] = field;
-                data["name"] = node[field];
-                data["data"] = user.firstName + " " + user.lastName;
+                data = getField(node, user.firstName + " " + user.lastName);
                 results.push(data);
+                break;
             }
           }
       }
     }
+    return data.hasOwnProperty("data");
   });
-  return results;
 }
 
 function resolveCheckbox(node, user) {
-  let results = [];
   if (node["labels"] && node["labels"][0]) {
     const label = node["labels"][0].innerText;
     let data = {};
     switch (true) {
       case matchesField(label, "latino"):
-        data["field"] = field;
-        data["name"] = node[field];
-        data["data"] = true;
+        data = getField(node, true);
         results.push(data);
         break;
       case matchesField(label, "male") && !matchesField(label, "female"):
-        data["field"] = field;
-        data["name"] = node[field];
-        data["data"] = true;
+        data = getField(node, true);
         results.push(data);
         break;
     }
   }
-  return results;
 }
 
 function resolveRadioButtons(node, user) {
-  let results = [];
+  let data = {};
   if (node["labels"] && node["labels"][0]) {
     const label = node["labels"][0].innerText;
-    for (let i = 0; i < entries.length; i++) {
-      let data = {};
+    entries.some((entry) => {
       switch (true) {
         case matchesField(label, "unrestricted right to work"):
-          data["field"] = field;
-          data["name"] = node[field];
-          data["data"] = true;
+          data = getField(node, true);
           results.push(data);
           break;
         case matchesField(label, "need sponsorship"):
-          data["field"] = field;
-          data["name"] = node[field];
-          data["data"] = true;
+          data = getField(node, true);
           results.push(data);
           break;
         default:
-          data["field"] = field;
-          data["name"] = node[field];
-          data["data"] = true;
+          data = getField(node, true);
           results.push(data);
+          break;
       }
-    }
+      return data.hasOwnProperty("data");
+    });
   }
-  return results;
 }
 
 function searchByLabel(node, user) {
-  let results = [];
   if (node["type"] === "checkbox") {
-    let res = resolveCheckbox(node, user);
-    results = [...results, ...res];
+    resolveCheckbox(node, user);
   }
   if (node["type"] === "radio") {
-    let res = resolveRadioButtons(node, user);
-    results = [...results, ...res];
+    resolveRadioButtons(node, user);
   }
   if (node["labels"] && node["labels"][0]) {
     const label = node["labels"][0].innerText;
-    for (let i = 0; i < entries.length; i++) {
-      let data = {};
+    let data = {};
+    entries.some((entry) => {
       switch (true) {
         case matchesField(label, "name"):
-          let res = resolveName(node, user);
-          results = [...results, ...res];
+          resolveName(node, user);
           break;
         case matchesField(label, "current location"):
-          data["field"] = field;
-          data["name"] = node[field];
-          data["data"] = `${user.city}, ${user.state}, ${user.country}`;
+          data = getField(node, `${user.city}, ${user.state}, ${user.country}`);
           results.push(data);
           break;
         case matchesField(label, "location"):
-          data["field"] = field;
-          data["name"] = node[field];
-          data["data"] = `${user.city}, ${user.state}`;
+          data = getField(node, `${user.city}, ${user.state}`);
           results.push(data);
           break;
         case matchesField(label, "state"):
-          data["field"] = field;
-          data["name"] = node[field];
-          data["data"] = stateAbbreviations[user.state];
+          data = getField(node, stateAbbreviations[user.state]);
           results.push(data);
           break;
-        case matchesField(label, entries[i].input):
-          data["field"] = field;
-          data["name"] = node[field];
-          data["data"] = user[entries[i].prop];
+        case matchesField(label, entry.input):
+          data = getField(node, user[entry.prop]);
           results.push(data);
           break;
       }
-    }
+      return data.hasOwnProperty("data");
+    });
   }
-  return results;
 }
 
 function enterInput(node, user) {
-  const fields = ["id", "name", "autocomplete", "className"];
-  let results = [];
-
-  for (let i = 0; i < fields.length; i++) {
-    const field = fields[i];
+  let data = {};
+  fields.some((field) => {
     if (node[field]) {
       for (let n = 0; n < entries.length; n++) {
-        let data = {};
         switch (true) {
           case matchesField(node[field], "name"):
-            let res = resolveName(node, user);
-            results = [...results, ...res];
+            resolveName(node, user);
             break;
           case matchesField(node[field], "location"):
-            data["field"] = field;
-            data["name"] = node[field];
-            data["data"] = `${user.city}, ${user.state}`;
+            data = getField(node, `${user.city}, ${user.state}`);
             results.push(data);
             break;
           case matchesField(node[field], entries[n].input):
-            data["field"] = field;
-            data["name"] = node[field];
-            data["data"] = user[entries[n].prop];
+            data = getField(node, user[entries[n].prop]);
             results.push(data);
             break;
         }
       }
+      return data.hasOwnProperty("data");
     }
+  });
+  if (!data.hasOwnProperty("data")) {
+    searchByLabel(node, user);
   }
-  let searchByLabelResults = searchByLabel(node, user);
-  results = [...results, ...searchByLabelResults];
-  return results;
 }
 
 function findFields(node, user) {
@@ -424,9 +397,7 @@ function findFields(node, user) {
       findFields(n, user);
     });
   } else {
-    let data = enterInput(node, user);
-    console.log(data);
-    return data;
+    enterInput(node, user);
   }
 }
 
@@ -434,13 +405,21 @@ browser.storage.local
   .get("user")
   .then((data) => {
     if (data.user) {
-      // let results = findFields(document.body, data.user);
-      fetch("http://localhost:5000", {
-        method: "POST",
-        body: JSON.stringify({ hey: "hi~!" }),
-      }).catch((err) => {
-        alert(err.message);
-      });
+      findFields(document.body, data.user);
+      if (results.length > 0) {
+        fetch("http://localhost:5000/", {
+          method: "POST",
+          body: JSON.stringify({ data: results }),
+        })
+          .then(async (data) => {
+            const response = await data.json();
+            alert(response.data);
+          })
+          .catch((err) => {
+            console.log(err);
+            alert(err);
+          });
+      }
     }
   })
   .catch((err) => {

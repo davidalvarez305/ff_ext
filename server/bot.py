@@ -4,9 +4,10 @@ from selenium.webdriver.chrome.options import Options
 from selenium.webdriver.chrome.service import Service
 from webdriver_manager.chrome import ChromeDriverManager
 from selenium.webdriver.common.by import By
+from selenium.common.exceptions import NoSuchElementException
 
 
-def execute():
+def execute(data):
     options = Options()
     user_agent = str(os.environ.get('USER_AGENT'))
     options.add_experimental_option("detach", True)
@@ -18,5 +19,17 @@ def execute():
 
     driver.get(os.environ.get('TEST_URL'))
 
-    name = driver.find_element(By.CLASS_NAME, "_input_u5avu_30")
-    name.send_keys('David')
+    for el in data:
+        try:
+            if el['field'] == 'name':
+                name = driver.find_element(By.NAME, el['name'])
+                name.send_keys(el['data'])
+            if el['field'] == 'id':
+                name = driver.find_element(By.ID, el['name'])
+                name.send_keys(el['data'])
+            if el['field'] == 'className':
+                name = driver.find_element(By.CLASS_NAME, el['name'])
+                name.send_keys(el['data'])
+        except NoSuchElementException as err:
+            print(err)
+            continue
