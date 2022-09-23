@@ -282,9 +282,9 @@ function resolveName(node, user) {
 }
 
 function resolveCheckbox(node, user) {
+  let data = {};
   if (node["labels"] && node["labels"][0]) {
     const label = node["labels"][0].innerText;
-    let data = {};
     switch (true) {
       case matchesField(label, "latino"):
         data = getField(node, true);
@@ -294,6 +294,7 @@ function resolveCheckbox(node, user) {
         break;
     }
   }
+  return data;
 }
 
 function resolveRadioButtons(node, user) {
@@ -318,6 +319,7 @@ function resolveRadioButtons(node, user) {
       return data.hasOwnProperty("data");
     });
   }
+  return data;
 }
 
 function checkByLabel(node, user) {
@@ -375,6 +377,7 @@ function checkByField(node, user) {
 }
 
 function isField(node) {
+  console.log(node);
   let nodeField = undefined;
   fields.some((field) => {
     nodeField = field;
