@@ -360,13 +360,11 @@ function isEmpty(obj) {
 
 function findFields(nodes, user) {
   nodes.forEach((node) => {
-    if (node.type === "file") {
-      console.log("node: ", node);
-    }
-
     let data = {};
 
-    if (node["type"] === "checkbox") {
+    if (node.type === "file" || node.type === "button") {
+      data = getField(node, "filepath");
+    } else if (node["type"] === "checkbox") {
       data = resolveCheckbox(node, user);
     } else if (node["type"] === "radio") {
       data = resolveRadioButtons(node, user);
@@ -385,7 +383,7 @@ browser.storage.local
   .then((data) => {
     if (data.user) {
       let nodes = [];
-      ["select", "input", "checkbox", "radio"].forEach((nodeType) => {
+      ["select", "input", "checkbox", "radio", "button"].forEach((nodeType) => {
         const nodeList = document.querySelectorAll(nodeType);
         nodes = [...nodes, ...nodeList];
       });
