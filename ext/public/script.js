@@ -260,6 +260,10 @@ function resolveName(node, user) {
           if (node["labels"] && node["labels"][0]) {
             const label = node["labels"][0].innerText;
             switch (true) {
+              case matchesField(label, "email") ||
+                matchesField(label, "e-mail"):
+                data = getField(node, user.email);
+                break;
               case matchesField(label, "first"):
                 data = getField(node, user.firstName);
                 break;
@@ -273,7 +277,6 @@ function resolveName(node, user) {
                 data = getField(node, user.middleName);
                 break;
               default:
-                data = getField(node, user.firstName + " " + user.lastName);
                 break;
             }
           }
@@ -327,37 +330,7 @@ function resolveRadioButtons(node, user) {
   return data;
 }
 
-function checkByLabel(node, user) {
-  let data = {};
-  if (node["labels"] && node["labels"][0]) {
-    const label = node["labels"][0].innerText;
-    for (let i = 0; i < entries.length; i++) {
-      if (matchesField(label, "name")) {
-        data = resolveName(node, user);
-        break;
-      }
-      if (matchesField(label, "current location")) {
-        data = getField(node, `${user.city}, ${user.state}, ${user.country}`);
-        break;
-      }
-      if (matchesField(label, "location")) {
-        data = getField(node, `${user.city}, ${user.state}`);
-        break;
-      }
-      if (matchesField(label, "state")) {
-        data = getField(node, stateAbbreviations[user.state]);
-        break;
-      }
-      if (matchesField(label, entries[i].input)) {
-        data = getField(node, user[entries[i].prop]);
-        break;
-      }
-    }
-  }
-  return data;
-}
-
-function checkByField(node, nodeField, user) {
+function resolveField(node, user) {
   let data = {};
   fields.some((field) => {
     if (node[field]) {
@@ -381,43 +354,26 @@ function checkByField(node, nodeField, user) {
   return data;
 }
 
-function isField(node) {
-  let nodeField;
-  if (node instanceof HTMLElement) {
-    for (let i = 0; i < fields.length; i++) {
-      if (node.hasAttribute(fields[i])) {
-        nodeField = fields[i];
-        break;
-      }
-    }
-  }
-  return nodeField;
-}
-
 function isEmpty(obj) {
   return Object.keys(obj).length === 0;
 }
 
 function findFields(nodes, user) {
-  /* if (node.hasChildNodes()) {
-    node.childNodes.forEach((n) => {
-      findFields(n, user);
-    });
-  } else {
-    
-  } */
   nodes.forEach((node) => {
+    if (node.type === "file") {
+      console.log("node: ", node);
+    }
+
     let data = {};
-    let nodeField = isField(node);
-    if (nodeField) {
-      data = checkByField(node, nodeField, user);
-    } else if (node["type"] === "checkbox") {
+
+    if (node["type"] === "checkbox") {
       data = resolveCheckbox(node, user);
     } else if (node["type"] === "radio") {
       data = resolveRadioButtons(node, user);
     } else {
-      data = checkByLabel(node, user);
+      data = resolveField(node, user);
     }
+
     if (!isEmpty(data)) {
       results.push(data);
     }
@@ -434,8 +390,8 @@ browser.storage.local
         nodes = [...nodes, ...nodeList];
       });
       findFields(nodes, data.user);
-      console.log(results);
       if (results.length > 0) {
+        console.log(results);
         fetch("http://localhost:5000/", {
           method: "POST",
           body: JSON.stringify({

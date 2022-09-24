@@ -1,21 +1,16 @@
 import os
 from selenium import webdriver
-from selenium.webdriver.chrome.options import Options
-from selenium.webdriver.chrome.service import Service
-from webdriver_manager.chrome import ChromeDriverManager
+from selenium.webdriver.firefox.options import Options
 from selenium.webdriver.common.by import By
-from selenium.common.exceptions import NoSuchElementException, ElementNotInteractableException
 
 
 def execute(data):
     options = Options()
     user_agent = str(os.environ.get('USER_AGENT'))
-    options.add_experimental_option("detach", True)
     # options.add_argument("--headless")
     options.add_argument(f'user-agent={user_agent}')
 
-    driver = webdriver.Chrome(service=Service(
-        ChromeDriverManager().install()), options=options)
+    driver = webdriver.Firefox()
 
     driver.get(data['url'])
 
