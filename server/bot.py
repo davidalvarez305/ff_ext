@@ -21,7 +21,6 @@ def execute(data):
 
     driver.get(data['url'])
 
-    print(data['results'])
     for el in data['results']:
         try:
             if el['field'] == 'name':
