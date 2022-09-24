@@ -215,6 +215,11 @@ function getField(node, val) {
       data["field"] = field;
       data["name"] = node[field];
       data["data"] = val;
+      console.log("========================");
+      console.log("node: ", node);
+      console.log("val: ", val);
+      console.log("data: ", data);
+      console.log("========================");
     }
     return check;
   });
@@ -352,7 +357,7 @@ function checkByLabel(node, user) {
   return data;
 }
 
-function checkByField(node, user) {
+function checkByField(node, nodeField, user) {
   let data = {};
   fields.some((field) => {
     if (node[field]) {
