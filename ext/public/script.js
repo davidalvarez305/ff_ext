@@ -377,12 +377,15 @@ function checkByField(node, user) {
 }
 
 function isField(node) {
-  console.log(node);
-  let nodeField = undefined;
-  fields.some((field) => {
-    nodeField = field;
-    return node.hasAttribute(field);
-  });
+  let nodeField;
+  if (node instanceof HTMLElement) {
+    for (let i = 0; i < fields.length; i++) {
+      if (node.hasAttribute(fields[i])) {
+        nodeField = fields[i];
+        break;
+      }
+    }
+  }
   return nodeField;
 }
 
@@ -412,10 +415,15 @@ browser.storage.local
   .then((data) => {
     if (data.user) {
       findFields(document.body, data.user);
-      if (results.length > 0) {
+      if (results.length > 1) {
         fetch("http://localhost:5000/", {
           method: "POST",
-          body: JSON.stringify({ data: results }),
+          body: JSON.stringify({
+            data: {
+              url: window.location.href,
+              results: results,
+            },
+          }),
         })
           .then(async (data) => {
             const response = await data.json();

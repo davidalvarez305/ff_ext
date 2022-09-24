@@ -17,9 +17,9 @@ def execute(data):
     driver = webdriver.Chrome(service=Service(
         ChromeDriverManager().install()), options=options)
 
-    driver.get(os.environ.get('TEST_URL'))
+    driver.get(data['url'])
 
-    for el in data:
+    for el in data['results']:
         try:
             if el['field'] == 'name':
                 name = driver.find_element(By.NAME, el['name'])
