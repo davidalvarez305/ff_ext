@@ -15,7 +15,6 @@ def main():
         return _build_cors_preflight_response()
     elif request.method == "POST":
         body = request.get_json(force=True)
-        print(body['data'])
         execute(body['data'])
         return jsonify({"data": "OK!"})
 

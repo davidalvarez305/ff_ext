@@ -43,7 +43,7 @@ export const App = () => {
             rightButton={"Home"}
           />
           <Box sx={{ overflow: "scroll", height: "100vh" }}>
-            <Setup user={user} />
+            <Setup user={user} setShowSetup={setShowSetup} />
           </Box>
         </Box>
       </Layout>

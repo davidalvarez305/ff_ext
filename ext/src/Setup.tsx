@@ -7,13 +7,15 @@ import SelectComponent from "./SelectComponent";
 
 interface Props {
   user: User;
+  setShowSetup: (value: React.SetStateAction<boolean>) => void;
 }
 
-export const Setup: React.FC<Props> = ({ user }) => {
+export const Setup: React.FC<Props> = ({ user, setShowSetup }) => {
   function handleSubmit(user: User) {
     browser.storage.local.set({
       user,
     });
+    setShowSetup(false);
   }
 
   return (

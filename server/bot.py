@@ -20,6 +20,7 @@ def execute(data):
     driver.get(data['url'])
 
     for el in data['results']:
+        print(el)
         try:
             if el['field'] == 'name':
                 name = driver.find_element(By.NAME, el['name'])

@@ -389,6 +389,10 @@ function isField(node) {
   return nodeField;
 }
 
+function isEmpty(obj) {
+  return Object.keys(obj).length === 0;
+}
+
 function findFields(node, user) {
   if (node.hasChildNodes()) {
     node.childNodes.forEach((n) => {
@@ -406,7 +410,9 @@ function findFields(node, user) {
     } else {
       data = checkByLabel(node, user);
     }
-    results.push(data);
+    if (!isEmpty(data)) {
+      results.push(data);
+    }
   }
 }
 
