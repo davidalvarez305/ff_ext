@@ -215,11 +215,7 @@ function getField(node, val) {
       data["field"] = field;
       data["name"] = node[field];
       data["data"] = val;
-      console.log("========================");
-      console.log("node: ", node);
-      console.log("val: ", val);
-      console.log("data: ", data);
-      console.log("========================");
+      data["type"] = node["nodeName"];
     }
     return check;
   });
@@ -240,21 +236,25 @@ function resolveName(node, user) {
           data["field"] = field;
           data["name"] = node[field];
           data["data"] = user.firstName;
+          data["type"] = node["nodeName"];
           break;
         case matchesField(node[field], "last"):
           data["field"] = field;
           data["name"] = node[field];
           data["data"] = user.lastName;
+          data["type"] = node["nodeName"];
           break;
         case matchesField(node[field], "full"):
           data["field"] = field;
           data["name"] = node[field];
           data["data"] = user.firstName + " " + user.lastName;
+          data["type"] = node["nodeName"];
           break;
         case matchesField(node[field], "middle"):
           data["field"] = field;
           data["name"] = node[field];
           data["data"] = user.middleName;
+          data["type"] = node["nodeName"];
           break;
         default:
           if (node["labels"] && node["labels"][0]) {
@@ -398,12 +398,15 @@ function isEmpty(obj) {
   return Object.keys(obj).length === 0;
 }
 
-function findFields(node, user) {
-  if (node.hasChildNodes()) {
+function findFields(nodes, user) {
+  /* if (node.hasChildNodes()) {
     node.childNodes.forEach((n) => {
       findFields(n, user);
     });
   } else {
+    
+  } */
+  nodes.forEach((node) => {
     let data = {};
     let nodeField = isField(node);
     if (nodeField) {
@@ -418,15 +421,21 @@ function findFields(node, user) {
     if (!isEmpty(data)) {
       results.push(data);
     }
-  }
+  });
 }
 
 browser.storage.local
   .get("user")
   .then((data) => {
     if (data.user) {
-      findFields(document.body, data.user);
-      if (results.length > 1) {
+      let nodes = [];
+      ["select", "input", "checkbox", "radio"].forEach((nodeType) => {
+        const nodeList = document.querySelectorAll(nodeType);
+        nodes = [...nodes, ...nodeList];
+      });
+      findFields(nodes, data.user);
+      console.log(results);
+      if (results.length > 0) {
         fetch("http://localhost:5000/", {
           method: "POST",
           body: JSON.stringify({

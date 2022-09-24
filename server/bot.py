@@ -4,7 +4,7 @@ from selenium.webdriver.chrome.options import Options
 from selenium.webdriver.chrome.service import Service
 from webdriver_manager.chrome import ChromeDriverManager
 from selenium.webdriver.common.by import By
-from selenium.common.exceptions import NoSuchElementException
+from selenium.common.exceptions import NoSuchElementException, ElementNotInteractableException
 
 
 def execute(data):
@@ -19,8 +19,8 @@ def execute(data):
 
     driver.get(data['url'])
 
+    print(data['results'])
     for el in data['results']:
-        print(el)
         try:
             if el['field'] == 'name':
                 name = driver.find_element(By.NAME, el['name'])
@@ -31,6 +31,6 @@ def execute(data):
             if el['field'] == 'className':
                 name = driver.find_element(By.CLASS_NAME, el['name'])
                 name.send_keys(el['data'])
-        except NoSuchElementException as err:
-            print(err)
+        except BaseException as error:
+            print(f"Error: {error}. Element: {el}")
             continue
