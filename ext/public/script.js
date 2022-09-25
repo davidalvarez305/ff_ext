@@ -362,8 +362,15 @@ function findFields(nodes, user) {
   nodes.forEach((node) => {
     let data = {};
 
-    if (node.type === "file" || node.type === "button") {
-      data = getField(node, "filepath");
+    if (node.type === "file") {
+      data = getField(node, "resume");
+    } else if (node.type === "button" && node.textContent === "Attach") {
+      if (node.outerHTML.includes("resume")) {
+        data = getField(node, "resume");
+      }
+      if (node.outerHTML.includes("cover")) {
+        data = getField(node, "cover");
+      }
     } else if (node["type"] === "checkbox") {
       data = resolveCheckbox(node, user);
     } else if (node["type"] === "radio") {

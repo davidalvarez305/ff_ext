@@ -5,8 +5,10 @@ from selenium.webdriver.common.by import By
 
 
 def get_data(el):
-    if el['data'] == 'filepath':
+    if el['data'] == 'resume':
         return os.environ.get('RESUME_PATH')
+    elif el['data'] == 'cover':
+        return os.environ.get('COVER_PATH')
     else:
         return el['data']
 
