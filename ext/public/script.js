@@ -396,7 +396,7 @@ browser.storage.local
         nodes = [...nodes, ...nodeList];
       });
       findFields(nodes, data.user);
-      if (results.length > 0) {
+      if (results.length > 2) {
         console.log(results);
         fetch("http://localhost:5000/", {
           method: "POST",
