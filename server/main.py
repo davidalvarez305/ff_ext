@@ -18,7 +18,6 @@ def main():
         execute(body['data'])
         return jsonify({"data": "OK!"})
 
-
 def _build_cors_preflight_response():
     response = make_response()
     response.headers.add("Access-Control-Allow-Origin", "*")

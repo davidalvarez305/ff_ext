@@ -203,7 +203,7 @@ const stateAbbreviations = {
   Wyoming: "WY",
 };
 
-const fields = ["id", "name", "className"];
+const fields = ["id", "name", "className", "autocomplete"];
 
 let results = [];
 
@@ -364,12 +364,13 @@ function findFields(nodes, user) {
 
     if (node.type === "file") {
       data = getField(node, "resume");
-    } else if (node.type === "button" && node.textContent === "Attach") {
+    } else if (node.type === "button") {
       if (node.outerHTML.includes("resume")) {
         data = getField(node, "resume");
-      }
-      if (node.outerHTML.includes("cover")) {
+      } else if (node.outerHTML.includes("cover")) {
         data = getField(node, "cover");
+      } else {
+        data = getField(node, "resume");
       }
     } else if (node["type"] === "checkbox") {
       data = resolveCheckbox(node, user);

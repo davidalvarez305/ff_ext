@@ -2,6 +2,7 @@ import os
 from selenium import webdriver
 from selenium.webdriver.firefox.options import Options
 from selenium.webdriver.common.by import By
+from utils import handle_hidden_fields
 
 
 def get_data(el):
@@ -34,6 +35,8 @@ def execute(data):
             if el['field'] == 'className':
                 name = driver.find_element(By.CLASS_NAME, el['name'])
                 name.send_keys(get_data(el))
+            if "greenhouse" in data['url']:
+                handle_hidden_fields(driver=driver)
         except BaseException as error:
             print(f"Error: {error}. Element: {el}")
             continue
