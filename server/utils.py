@@ -1,7 +1,55 @@
 from selenium.webdriver.common.by import By
 
 
-def handle_hidden_fields(driver, class_name, select_class_name):
+def select_field(options, field_name):
+    if "security clearance" in field_name:
+        for option in options:
+            if "Yes" in option.get_attribute('textContent'):
+                option.click()
+                return
+    if "willing to relocate" in field_name:
+        for option in options:
+            if "No" in option.get_attribute('textContent'):
+                option.click()
+                return
+    if "race" in field_name:
+        for option in options:
+            if "Hispanic or Latino" in option.get_attribute('textContent'):
+                option.click()
+                return
+    if "legally authorized" in field_name:
+        for option in options:
+            if "Yes" in option.get_attribute('textContent'):
+                option.click()
+                return
+    if "sponsorship" in field_name:
+        for option in options:
+            if "No" in option.get_attribute('textContent'):
+                option.click()
+                return
+    if "Disability" in field_name:
+        for option in options:
+            if "No, " in option.get_attribute('textContent'):
+                option.click()
+                return
+    if "Veteran" in field_name:
+        for option in options:
+            if "I am not" in option.get_attribute('textContent'):
+                option.click()
+                return
+    if "Hispanic/Latino" in field_name:
+        for option in options:
+            if "Yes" in option.get_attribute('textContent'):
+                option.click()
+                return
+    if "Gender" in field_name:
+        for option in options:
+            if "Male" in option.get_attribute('textContent'):
+                option.click()
+                return
+
+
+def handle_hidden_fields(driver, class_name):
     dropdowns = driver.find_elements(By.CLASS_NAME, class_name)
     for dp in dropdowns:
         try:
@@ -10,40 +58,14 @@ def handle_hidden_fields(driver, class_name, select_class_name):
 
             options = []
 
-            if len(select_class_name) > 0:
+            if class_name == "field":
                 options = driver.find_elements(
-                    By.CLASS_NAME, select_class_name)
+                    By.CLASS_NAME, "select2-result-label")
             else:
                 options = driver.find_elements(
                     By.TAG_NAME, "option")
 
-            for option in options:
-                if "citizen" in field_name:
-                    if "Yes" in option.get_attribute('textContent'):
-                        option.click()
-                if "relocate" in field_name:
-                    if "No" in option.get_attribute('textContent'):
-                        option.click()
-                if "race" in field_name:
-                    if "Hispanic or Latino" == option.get_attribute('textContent'):
-                        option.click()
-                if "legally authorized" in field_name:
-                    if "Yes" in option.get_attribute('textContent'):
-                        option.click()
-                if "sponsorship" in field_name:
-                    if "No" in option.get_attribute('textContent'):
-                        option.click()
-                if "Disability" in field_name:
-                    if "No, " in option.get_attribute('textContent'):
-                        option.click()
-                if "Veteran" in field_name:
-                    if "I am not" in option.get_attribute('textContent'):
-                        option.click()
-                if "Hispanic/Latino" in field_name:
-                    if "Yes" in option.get_attribute('textContent'):
-                        option.click()
-                if "Gender" in field_name:
-                    if "Male" in option.get_attribute('textContent'):
-                        option.click()
+            select_field(options, field_name)
+
         except BaseException as err:
             print("Hidden field")

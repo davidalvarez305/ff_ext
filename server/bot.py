@@ -24,6 +24,8 @@ def execute(data):
 
     driver.get(data['url'])
 
+    print(data['user'])
+
     for el in data['results']:
         try:
             if el['field'] == 'name':
@@ -36,13 +38,14 @@ def execute(data):
                 name = driver.find_element(By.CLASS_NAME, el['name'])
                 name.send_keys(get_data(el))
         except BaseException as error:
-            print(f"Error: {error}. Element: {el}")
+            # print(f"Error: {error}. Element: {el}")
             continue
 
     try:
         if "greenhouse" in data['url']:
-            handle_hidden_fields(driver=driver, class_name="field", select_class_name="select2-result-label")
+            handle_hidden_fields(driver=driver, class_name="field")
         if "lever" in data['url']:
-            handle_hidden_fields(driver=driver, class_name="custom-question", select_class_name="")
+            handle_hidden_fields(driver=driver, class_name="custom-question")
     except BaseException as error:
-        print(f"Error: {error}. Element: {el}")
+        # print(f"Error: {error}. Element: {el}")
+        pass

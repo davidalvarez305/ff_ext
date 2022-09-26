@@ -404,6 +404,7 @@ browser.storage.local
             data: {
               url: window.location.href,
               results: results,
+              user: data.user,
             },
           }),
         })
