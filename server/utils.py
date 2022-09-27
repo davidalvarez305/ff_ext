@@ -1,7 +1,9 @@
+from datetime import datetime
+import time
 from selenium.webdriver.common.by import By
+from selenium.webdriver.support.wait import WebDriverWait
 
-
-def select_field(options, field_name):
+def select_field(options, field_name, element):
     if "security clearance" in field_name:
         for option in options:
             if "Yes" in option.get_attribute('textContent'):
@@ -47,14 +49,18 @@ def select_field(options, field_name):
             if "Male" in option.get_attribute('textContent'):
                 option.click()
                 return
+    if "Your name" in field_name:
+        element.send_keys('David Alvarez')
+    if "Today's date" in field_name:
+        element.send_keys(datetime.today().strftime('%m/%d/%Y'))
 
 
 def handle_hidden_fields(driver, class_name):
     dropdowns = driver.find_elements(By.CLASS_NAME, class_name)
-    for dp in dropdowns:
+    for element in dropdowns:
         try:
-            dp.click()
-            field_name = dp.get_attribute('textContent')
+            element.click()
+            field_name = element.get_attribute('innerText')
 
             options = []
 
@@ -65,7 +71,10 @@ def handle_hidden_fields(driver, class_name):
                 options = driver.find_elements(
                     By.TAG_NAME, "option")
 
-            select_field(options, field_name)
+            select_field(options, field_name, element)
 
         except BaseException as err:
-            print("Hidden field")
+            print(err)
+
+        
+    
