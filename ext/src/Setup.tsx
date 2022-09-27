@@ -12,6 +12,7 @@ interface Props {
 
 export const Setup: React.FC<Props> = ({ user, setShowSetup }) => {
   function handleSubmit(user: User) {
+    user.isHispanic = user.race === "Hispanic or Latino" ? "Yes" : "No"
     browser.storage.local.set({
       user,
     });
@@ -83,14 +84,6 @@ export const Setup: React.FC<Props> = ({ user, setShowSetup }) => {
                     {...field}
                   />
                 );
-              case "isHispanic":
-                return (
-                  <SelectComponent
-                    defaultValue={user[field.name]}
-                    options={["Yes", "No", "Decline To Self Identify"]}
-                    {...field}
-                  />
-                );
               case "state":
                 return (
                   <SelectComponent
@@ -112,8 +105,8 @@ export const Setup: React.FC<Props> = ({ user, setShowSetup }) => {
                   <SelectComponent
                     defaultValue={user[field.name]}
                     options={[
-                      "I am not a protected veteran",
-                      "I identify as one or more of the classifications of a protected veteran",
+                      "Yes",
+                      "No",
                       "I don't wish to answer",
                     ]}
                     {...field}
@@ -124,8 +117,8 @@ export const Setup: React.FC<Props> = ({ user, setShowSetup }) => {
                   <SelectComponent
                     defaultValue={user[field.name]}
                     options={[
-                      "Yes, I have a disability, or have a history/record of having a disability",
-                      "No, I don't have a disability, or a history/record of having a disability",
+                      "Yes",
+                      "No",
                       "I don't wish to answer",
                     ]}
                     {...field}

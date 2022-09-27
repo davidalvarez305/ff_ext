@@ -216,6 +216,7 @@ export const emptyUser = {
   universityStartDate: 0,
   universityEndDate: 0,
   areaOfInterest: "",
+  securityClearance: "",
 };
 
 export const capitalizeFirstLetter = (str: string) => {

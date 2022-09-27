@@ -38,7 +38,7 @@ def execute(data):
                 name = driver.find_element(By.CLASS_NAME, el['name'])
                 name.send_keys(get_data(el))
         except BaseException as error:
-            print(f"Error: {error}. Element: {el}")
+            # print(f"Error: {error}. Element: {el}")
             continue
 
     try:
@@ -47,5 +47,5 @@ def execute(data):
         if "lever" in data['url']:
             handle_hidden_fields(driver=driver, class_name="application-question", data=data)
     except BaseException as error:
-        print(f"Error: {error}. Element: {el}")
+        # print(f"Error: {error}. Element: {el}")
         pass
