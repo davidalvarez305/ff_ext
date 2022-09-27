@@ -43,9 +43,9 @@ def execute(data):
 
     try:
         if "greenhouse" in data['url']:
-            handle_hidden_fields(driver=driver, class_name="field")
+            handle_hidden_fields(driver=driver, class_name="field", data=data)
         if "lever" in data['url']:
-            handle_hidden_fields(driver=driver, class_name="application-question")
+            handle_hidden_fields(driver=driver, class_name="application-question", data=data)
     except BaseException as error:
         print(f"Error: {error}. Element: {el}")
         pass

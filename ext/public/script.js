@@ -147,6 +147,14 @@ const entries = [
     input: "work visa",
     prop: "immigrationSponsorship",
   },
+  {
+    input: "area of interest",
+    prop: "areaOfInterest",
+  },
+  {
+    input: "Security Clearance",
+    prop: "securityClearance",
+  },
 ];
 
 const stateAbbreviations = {

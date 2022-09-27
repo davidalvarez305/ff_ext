@@ -133,6 +133,14 @@ export const fields = [
     name: "universityEndDate",
     type: "number",
   },
+  {
+    label: "Area of Interest",
+    name: "areaOfInterest",
+  },
+  {
+    label: "Security Clearance",
+    name: "securityClearance"
+  }
 ];
 
 export type User = {
@@ -169,6 +177,8 @@ export type User = {
   discipline: string;
   universityStartDate: number;
   universityEndDate: number;
+  areaOfInterest: string;
+  securityClearance: string;
 };
 
 export const emptyUser = {
@@ -205,6 +215,7 @@ export const emptyUser = {
   discipline: "",
   universityStartDate: 0,
   universityEndDate: 0,
+  areaOfInterest: "",
 };
 
 export const capitalizeFirstLetter = (str: string) => {

@@ -46,6 +46,35 @@ export const Setup: React.FC<Props> = ({ user, setShowSetup }) => {
                     {...field}
                   />
                 );
+              case "areaOfInterest":
+                return (
+                  <SelectComponent
+                    defaultValue={user[field.name]}
+                    options={[
+                      "Cloud",
+                      "Consulting",
+                      "Data Analytics",
+                      "Design & UX",
+                      "Enterprise Operations",
+                      "Infrastructure & Technology",
+                      "Project Management",
+                      "Research",
+                      "Sales",
+                      "Security",
+                      "Software Engineering",
+                    ]}
+                    {...field}
+                  />
+                );
+
+              case "securityClearance":
+                return (
+                  <SelectComponent
+                    defaultValue={user[field.name]}
+                    options={["Yes", "No"]}
+                    {...field}
+                  />
+                );
               case "workAuthorization" || "immigrationSponsorship":
                 return (
                   <SelectComponent
