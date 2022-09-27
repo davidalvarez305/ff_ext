@@ -62,7 +62,7 @@ def select_field(options, field_name, element, driver, data):
                 option.click()
                 return
     if "Your name" in field_name:
-        element.send_keys('David Alvarez')
+        element.send_keys(f"{data['firstName']} {data['lastName']}")
     if "Today's date" in field_name:
         element.send_keys(datetime.today().strftime('%m/%d/%Y'))
     if "annual compensation" in field_name:
@@ -72,8 +72,7 @@ def select_field(options, field_name, element, driver, data):
     if "require" in field_name and "immigration" in field_name:
         btns = driver.find_elements(By.CLASS_NAME, "application-answer-alternative")
         for btn in btns:
-            print(btn.get_attribute('textContent'))
-            if "No." in btn.get_attribute('textContent'):
+            if match_field(btn.get_attribute('textContent'), data['immigrationSponsorship']):
                 btn.click()
 
 
