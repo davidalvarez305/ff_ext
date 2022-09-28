@@ -78,8 +78,8 @@ def select_field(options, field_name, element, driver, data):
                 btn.click()
 
 
-def handle_hidden_fields(driver, class_name, data):
-    dropdowns = driver.find_elements(By.CLASS_NAME, class_name)
+def handle_hidden_fields(driver, field_name, data):
+    dropdowns = driver.find_elements(By.CLASS_NAME, field_name)
     for element in dropdowns:
         try:
             element.click()
@@ -87,9 +87,13 @@ def handle_hidden_fields(driver, class_name, data):
 
             options = []
 
-            if class_name == "field":
+
+            if field_name == "field":
                 options = driver.find_elements(
                     By.CLASS_NAME, "select2-result-label")
+            elif field_name == "tr":
+                options = driver.find_elements(
+                    By.TAG_NAME, field_name)
             else:
                 options = driver.find_elements(
                     By.TAG_NAME, "option")
