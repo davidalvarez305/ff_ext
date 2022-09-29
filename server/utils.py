@@ -1,9 +1,14 @@
 from datetime import datetime
+from time import sleep
 from selenium.webdriver.common.by import By
 
 def handle_underdog(options, data, driver):
 
     select_fields = driver.find_elements(By.TAG_NAME, "select")
+
+    def auto_complete():
+        hidden_input = driver.find_element(By.TAG_NAME, "li")
+        hidden_input.click()
 
     def select_option(selection):
         options = driver.find_elements(By.TAG_NAME, "option")
@@ -23,10 +28,33 @@ def handle_underdog(options, data, driver):
             select_option("Technical")
         if "experience_level" in field_name.lower():
             select_option("1-2 years")
-        if "skills" in field_name.lower():
-            select_option("Python, Javascript, SQL, Go, Docker, AWS, Linux, Google Cloud Platform")
         if "visa_toggle" in field_name.lower():
             select_option("I am a U.S. citizen or a lawful permanent resident")
+
+    hidden_inputs = driver.find_elements(By.CLASS_NAME, "autocomplete__input")
+
+    for input in hidden_inputs:
+        input_name = input.find_element(By.XPATH, ".//ancestor::label").get_attribute('textContent')
+        try:
+            if "Current location" in input_name:
+                input.send_keys("Hialeah, FL, USA")
+                input.click()
+                sleep(3)
+                auto_complete()
+            if "Location preference" in input_name:
+                input.send_keys("Remote")
+                input.click()
+                auto_complete()
+            if "Skills" in input_name:
+                input.send_keys("Python, Javascript, SQL, Go, Docker, AWS, Linux, Google Cloud Platform")
+                input.click()
+                auto_complete()
+            if "Job type preference(s)" in input_name:
+                input.send_keys("I want a full")
+                input.click()
+                auto_complete()
+        except BaseException as err:
+            print(err)
 
     for element in options:
         if element.get_attribute('value') == "":
@@ -41,8 +69,6 @@ def handle_underdog(options, data, driver):
             element.send_keys(data['user']['linkedIn'])
         if "github" in field_name.lower() or "portfolio" in field_name.lower():
             element.send_keys(data['user']['portfolio'])
-        if "current location" in field_name.lower():
-            element.send_keys("Hialeah, FL, USA")
 
 def field_match(option, data):
     if option == data or data in option:
