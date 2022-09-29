@@ -59,16 +59,16 @@ def handle_underdog(options, data, driver):
     for element in options:
         if element.get_attribute('value') == "":
             field_name = element.get_attribute('name')
-        if "first" in field_name.lower():
-            element.send_keys(data['user']['firstName'])
-        if "last" in field_name.lower():
-            element.send_keys(data['user']['lastName'])
-        if "email" in field_name.lower():
-            element.send_keys(data['user']['email'])
-        if "website" in field_name.lower():
-            element.send_keys(data['user']['linkedIn'])
-        if "github" in field_name.lower() or "portfolio" in field_name.lower():
-            element.send_keys(data['user']['portfolio'])
+            if "first" in field_name.lower():
+                element.send_keys(data['user']['firstName'])
+            if "last" in field_name.lower():
+                element.send_keys(data['user']['lastName'])
+            if "email" in field_name.lower():
+                element.send_keys(data['user']['email'])
+            if "website" in field_name.lower():
+                element.send_keys(data['user']['linkedIn'])
+            if "github" in field_name.lower() or "portfolio" in field_name.lower():
+                element.send_keys(data['user']['portfolio'])
 
 def field_match(option, data):
     if option == data or data in option:
