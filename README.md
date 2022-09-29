@@ -33,7 +33,7 @@ Step #2: Navigate to "dist" folder & click Open.
 Step #5: Use.
 
 ```
-Step #1: Click on "Setup" and enter your information. This is saved in your browser, there are no requests made to any server or save your information.
+Step #1: Click on "Setup" and enter your information. This is saved in your browser, there are no requests made to any server to save your information.
 
 Step #2: Navigate to any website that requires form input.
 
