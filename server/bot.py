@@ -43,11 +43,11 @@ def execute(data):
 
     try:
         if "greenhouse" in data['url']:
-            handle_hidden_fields(driver=driver, field_name="field", data=data)
+            handle_hidden_fields(driver=driver, class_name="field", data=data)
         if "lever" in data['url']:
-            handle_hidden_fields(driver=driver, field_name="application-question", data=data)
-        if "applytracking" in data['url']:
-            handle_hidden_fields(driver=driver, field_name="tr", data=data)
+            handle_hidden_fields(driver=driver, class_name="application-question", data=data)
+        if "underdog.io" in data['url']:
+            handle_hidden_fields(driver=driver, class_name="div-block-37", data=data)
     except BaseException as error:
         # print(f"Error: {error}. Element: {el}")
         pass

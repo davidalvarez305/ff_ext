@@ -1,7 +1,48 @@
 from datetime import datetime
-import time
 from selenium.webdriver.common.by import By
-from selenium.webdriver.support.wait import WebDriverWait
+
+def handle_underdog(options, data, driver):
+
+    select_fields = driver.find_elements(By.TAG_NAME, "select")
+
+    def select_option(selection):
+        options = driver.find_elements(By.TAG_NAME, "option")
+        for option in options:
+            option_name = option.get_attribute('textContent')
+            if option_name == selection:
+                option.click()
+
+    for select_field in select_fields:
+        select_field.click()
+        field_name = select_field.get_attribute('name')
+        if "location" in field_name.lower():
+            select_option("Remote")
+        if "search_status" in field_name.lower():
+            select_option("Actively interviewing")
+        if "technical" in field_name.lower():
+            select_option("Technical")
+        if "experience_level" in field_name.lower():
+            select_option("1-2 years")
+        if "skills" in field_name.lower():
+            select_option("Python, Javascript, SQL, Go, Docker, AWS, Linux, Google Cloud Platform")
+        if "visa_toggle" in field_name.lower():
+            select_option("I am a U.S. citizen or a lawful permanent resident")
+
+    for element in options:
+        if element.get_attribute('value') == "":
+            field_name = element.get_attribute('name')
+        if "first" in field_name.lower():
+            element.send_keys(data['user']['firstName'])
+        if "last" in field_name.lower():
+            element.send_keys(data['user']['lastName'])
+        if "email" in field_name.lower():
+            element.send_keys(data['user']['email'])
+        if "website" in field_name.lower():
+            element.send_keys(data['user']['linkedIn'])
+        if "github" in field_name.lower() or "portfolio" in field_name.lower():
+            element.send_keys(data['user']['portfolio'])
+        if "current location" in field_name.lower():
+            element.send_keys("Hialeah, FL, USA")
 
 def field_match(option, data):
     if option == data or data in option:
@@ -18,6 +59,9 @@ def field_match(option, data):
     return count / len(option_arr) >= .35
 
 def select_field(options, field_name, element, driver, data):
+    if "underdog.io" in data['url']:
+        handle_underdog(options, data, driver)
+        return
     if "security clearance" in field_name:
         for option in options:
             if field_match(option=option.get_attribute('textContent'), data=data['user']['securityClearance']):
@@ -78,8 +122,8 @@ def select_field(options, field_name, element, driver, data):
                 btn.click()
 
 
-def handle_hidden_fields(driver, field_name, data):
-    dropdowns = driver.find_elements(By.CLASS_NAME, field_name)
+def handle_hidden_fields(driver, class_name, data):
+    dropdowns = driver.find_elements(By.CLASS_NAME, class_name)
     for element in dropdowns:
         try:
             element.click()
@@ -87,13 +131,12 @@ def handle_hidden_fields(driver, field_name, data):
 
             options = []
 
-
-            if field_name == "field":
+            if class_name == "field":
                 options = driver.find_elements(
                     By.CLASS_NAME, "select2-result-label")
-            elif field_name == "tr":
+            if class_name == "div-block-37":
                 options = driver.find_elements(
-                    By.TAG_NAME, field_name)
+                    By.TAG_NAME, "input")
             else:
                 options = driver.find_elements(
                     By.TAG_NAME, "option")
