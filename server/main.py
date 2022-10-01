@@ -1,4 +1,4 @@
-from flask import Flask, make_response, jsonify
+from flask import Flask, jsonify
 from flask_cors import CORS
 from dotenv import load_dotenv
 from flask import request
@@ -8,19 +8,10 @@ app = Flask(__name__)
 CORS(app, resources={r"/*": {"origins": "*"}})
 
 
-@app.route('/', methods=["POST", "OPTIONS"])
+@app.route('/', methods=["POST"])
 def main():
     load_dotenv()
-    if request.method == "OPTIONS":
-        return _build_cors_preflight_response()
-    elif request.method == "POST":
+    if request.method == "POST":
         body = request.get_json(force=True)
         execute(body['data'])
         return jsonify({"data": "OK!"})
-
-def _build_cors_preflight_response():
-    response = make_response()
-    response.headers.add("Access-Control-Allow-Origin", "*")
-    response.headers.add('Access-Control-Allow-Headers', "*")
-    response.headers.add('Access-Control-Allow-Methods', "*")
-    return response

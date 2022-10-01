@@ -2,13 +2,13 @@ from datetime import datetime
 from time import sleep
 from selenium.webdriver.common.by import By
 
+def auto_complete(driver, tag):
+    hidden_input = driver.find_element(By.TAG_NAME, tag)
+    hidden_input.click()
+
 def handle_underdog(options, data, driver):
 
     select_fields = driver.find_elements(By.TAG_NAME, "select")
-
-    def auto_complete():
-        hidden_input = driver.find_element(By.TAG_NAME, "li")
-        hidden_input.click()
 
     def select_option(selection):
         options = driver.find_elements(By.TAG_NAME, "option")
@@ -39,20 +39,20 @@ def handle_underdog(options, data, driver):
             if "Current location" in input_name:
                 input.send_keys("Hialeah, FL, USA")
                 input.click()
-                sleep(3)
-                auto_complete()
+                sleep(1.5)
+                auto_complete(driver, "li")
             if "Location preference" in input_name:
                 input.send_keys("Remote")
                 input.click()
-                auto_complete()
+                auto_complete(driver, "li")
             if "Skills" in input_name:
                 input.send_keys("Python, Javascript, SQL, Go, Docker, AWS, Linux, Google Cloud Platform")
                 input.click()
-                auto_complete()
+                auto_complete(driver, "li")
             if "Job type preference(s)" in input_name:
                 input.send_keys("I want a full")
                 input.click()
-                auto_complete()
+                auto_complete(driver, "li")
         except BaseException as err:
             print(err)
 
@@ -85,9 +85,30 @@ def field_match(option, data):
     return count / len(option_arr) >= .35
 
 def select_field(options, field_name, element, driver, data):
-    if "underdog.io" in data['url']:
-        handle_underdog(options, data, driver)
-        return
+    if "Degree" in field_name:
+        select_opts = element.find_elements(By.XPATH, "./*")
+        for option in select_opts:
+            print(option.get_attribute('textContent'))
+            if field_match(option=option.get_attribute('textContent'), data=data['user']['degree']):
+                option.click()
+                return
+    if "School" in field_name:
+
+        # I need to improve how this backend works. First, I need to get all of the input and select fields.
+        # If input field, send keys. If select field, find all options, and then click the one.
+        # Right now, I am traversing through every element in the form and clicking it, which is unnecessary for some forms.
+        # Separate the forms, and do this more cleanly.
+
+        els = element.find_elements(By.XPATH, "./*")
+        for el in els:
+            if "INPUT" in el.get_attribute('tagName'):
+                print(el.get_attribute('outerHTML'))
+                el.click()
+                el.send_keys(data['user']['school'])
+                print(el.get_attribute('value'))
+                sleep(1.5)
+                auto_complete(driver, "span")
+
     if "security clearance" in field_name:
         for option in options:
             if field_match(option=option.get_attribute('textContent'), data=data['user']['securityClearance']):
@@ -147,25 +168,15 @@ def select_field(options, field_name, element, driver, data):
             if field_match(btn.get_attribute('textContent'), data=data['user']['immigrationSponsorship']):
                 btn.click()
 
-
-def handle_hidden_fields(driver, class_name, data):
-    dropdowns = driver.find_elements(By.CLASS_NAME, class_name)
+def handle_greenhouse(driver, data):
+    dropdowns = driver.find_elements(By.CLASS_NAME, "field")
     for element in dropdowns:
         try:
             element.click()
             field_name = element.get_attribute('innerText')
 
-            options = []
-
-            if class_name == "field":
-                options = driver.find_elements(
+            options = driver.find_elements(
                     By.CLASS_NAME, "select2-result-label")
-            if class_name == "div-block-37":
-                options = driver.find_elements(
-                    By.TAG_NAME, "input")
-            else:
-                options = driver.find_elements(
-                    By.TAG_NAME, "option")
 
             select_field(options, field_name, element, driver, data)
 
@@ -173,5 +184,33 @@ def handle_hidden_fields(driver, class_name, data):
             # print(err)
             continue
 
-        
-    
+def handle_lever(driver, data):
+    dropdowns = driver.find_elements(By.CLASS_NAME, "application-question")
+    for element in dropdowns:
+        try:
+            element.click()
+            field_name = element.get_attribute('innerText')
+
+            options = driver.find_elements(
+                    By.TAG_NAME, "input")
+
+            select_field(options, field_name, element, driver, data)
+
+        except BaseException as err:
+            # print(err)
+            continue
+
+def handle_underdog_fields(driver, data):
+    dropdowns = driver.find_elements(By.CLASS_NAME, "div-block-37")
+    for element in dropdowns:
+        try:
+            element.click()
+
+            options = driver.find_elements(
+                    By.TAG_NAME, "option")
+
+            handle_underdog(options, data, driver)
+
+        except BaseException as err:
+            # print(err)
+            continue

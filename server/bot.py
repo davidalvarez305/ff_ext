@@ -3,7 +3,7 @@ from selenium import webdriver
 from selenium.webdriver.support.wait import WebDriverWait
 from selenium.webdriver.firefox.options import Options
 from selenium.webdriver.common.by import By
-from utils import handle_hidden_fields
+from utils import handle_greenhouse, handle_hidden_fields, handle_lever, handle_underdog_fields
 
 
 def get_data(el):
@@ -43,11 +43,11 @@ def execute(data):
 
     try:
         if "greenhouse" in data['url']:
-            handle_hidden_fields(driver=driver, class_name="field", data=data)
+            handle_greenhouse(driver=driver, data=data)
         if "lever" in data['url']:
-            handle_hidden_fields(driver=driver, class_name="application-question", data=data)
+            handle_lever(driver=driver, data=data)
         if "underdog.io" in data['url']:
-            handle_hidden_fields(driver=driver, class_name="div-block-37", data=data)
+            handle_underdog_fields(driver=driver, data=data)
     except BaseException as error:
         # print(f"Error: {error}. Element: {el}")
         pass
