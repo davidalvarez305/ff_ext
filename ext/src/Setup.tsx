@@ -105,8 +105,8 @@ export const Setup: React.FC<Props> = ({ user, setShowSetup }) => {
                   <SelectComponent
                     defaultValue={user[field.name]}
                     options={[
-                      "Yes",
-                      "No",
+                      "I identify as one or more of the classifications of a protected veteran",
+                      "I am not a protected veteran",
                       "I don't wish to answer",
                     ]}
                     {...field}

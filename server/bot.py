@@ -3,7 +3,7 @@ from selenium import webdriver
 from selenium.webdriver.support.wait import WebDriverWait
 from selenium.webdriver.firefox.options import Options
 from selenium.webdriver.common.by import By
-from utils import handle_greenhouse, handle_hidden_fields, handle_lever, handle_underdog_fields
+from utils import handle_greenhouse, handle_lever, handle_underdog_fields
 
 
 def get_data(el):
