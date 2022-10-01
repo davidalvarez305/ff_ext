@@ -86,28 +86,37 @@ def field_match(option, data):
 def handle_select_child_options(element, user_data):
     options = element.find_elements(By.XPATH, '//li[@role="option"]')
     for option in options:
-        if field_match(option=option.get_attribute('textContent'), data=user_data):
+        if field_match(option=option.get_attribute('innerText'), data=user_data):
             option.click()
             return
 
-def handle_autocomplete(driver, user_data, input_class):
-    input = driver.find_element(By.ID, input_class)
-    input.send_keys(user_data)
-    sleep(1.5)
-    drop_element = driver.find_element(By.ID, "selectedOption")
-    drop_element.click()
+def handle_greenhouse_autocomplete(driver, data, field_name):
 
+    def handle_input(input, user_data):
+        input.send_keys(user_data)
+        sleep(1.5)
+        drop_element = driver.find_element(By.ID, "selectedOption")
+        drop_element.click()
+
+    autocomplete_fields = driver.find_elements(By.XPATH, '//div[@class="select2-search"]')
+
+    for field in autocomplete_fields:
+        try:
+            # Handle Autocomplete Fields
+            if "School" in field_name:
+                handle_input(field.find_element(By.TAG_NAME, "input"), data['user']['school'])
+            if "Degree" in field_name or "degree" in field_name:
+                handle_input(field.find_element(By.TAG_NAME, "input"), "Associate")
+            if "Discipline" in field_name:
+                handle_input(field.find_element(By.TAG_NAME, "input"), "Business")
+        except BaseException:
+            continue
+    
+def handle_hidden_input(element, user_data):
+    input = element.find_element(By.XPATH, './label/input[@type="text"]')
+    input.send_keys(user_data)
 
 def handle_hidden_field(field_name, element, driver, data):
-
-    # Handle Autocomplete Fields
-    if "School" in field_name:
-        handle_autocomplete(driver, data['user']['school'], "s2id_autogen7_search")
-    if "Degree" in field_name:
-        handle_autocomplete(driver, "Associate", "s2id_autogen8_search")
-    if "Discipline" in field_name:
-        handle_autocomplete(driver, "Business", "s2id_autogen9_search")
-    
     # Handle Hidden Fields
     if "security clearance" in field_name:
         handle_select_child_options(element, data['user']['securityClearance'])
@@ -115,7 +124,7 @@ def handle_hidden_field(field_name, element, driver, data):
         handle_select_child_options(element, "No")
     if "race" in field_name:
         handle_select_child_options(element, data['user']['race'])
-    if "legally authorized" in field_name:
+    if "authorized":
         handle_select_child_options(element, data['user']['workAuthorization'])
     if "sponsorship" in field_name:
         handle_select_child_options(element, data['user']['immigrationSponsorship'])
@@ -130,17 +139,21 @@ def handle_hidden_field(field_name, element, driver, data):
 
     # Handle Hidden Input Fields
     if "LinkedIn" in field_name:
-        element.send_keys(data['user']['linkedin'])
+        handle_hidden_input(element, data['user']['linkedin'])
+        sleep(1.5)
     if "Wesbite" in field_name:
-        element.send_keys(data['user']['website'])
+        handle_hidden_input(element, data['user']['website'])
+        sleep(1.5)
     if "Your name" in field_name:
-        element.send_keys(f"{data['user']['firstName']} {data['user']['lastName']}")
+        handle_hidden_input(element, f"{data['user']['firstName']} {data['user']['lastName']}")
     if "Today's date" in field_name:
-        element.send_keys(datetime.today().strftime('%m/%d/%Y'))
-    if "annual compensation" in field_name:
-        element.send_keys('Open')
-    if "looking to start" in field_name:
-        element.send_keys('Open')
+        handle_hidden_input(element, datetime.today().strftime('%m/%d/%Y'))
+    if "annual compensation" in field_name or "looking to start" in field_name or "salary" in field_name:
+        handle_hidden_input(element, 'Open')
+    if "country of residence" in field_name:
+        handle_hidden_input(element, data['user']['country'])
+    if "hear about this job" in field_name:
+        handle_hidden_input(element, "LinkedIn")
     if "require" in field_name and "immigration" in field_name:
         btns = driver.find_elements(By.CLASS_NAME, "application-answer-alternative")
         for btn in btns:
@@ -152,8 +165,9 @@ def handle_greenhouse(driver, data):
     for element in dropdowns:
         try:
             element.click()
-            field_name = element.find_element(By.XPATH, "./label").get_attribute('textContent')
+            field_name = element.find_element(By.XPATH, "./label").get_attribute('innerText')
             if "School" or "Degree" or "Discipline" in field_name:
+                handle_greenhouse_autocomplete(driver, data, field_name)
                 sleep(1)
 
             handle_hidden_field(field_name, element, driver, data)

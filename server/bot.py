@@ -41,13 +41,17 @@ def execute(data):
             # print(f"Error: {error}. Element: {el}")
             continue
 
+    # handle smartrecruiters.com
+    # handle workdayjobs.com
+    # handle dice.com
+
     try:
-        if "greenhouse" in data['url']:
-            handle_greenhouse(driver=driver, data=data)
         if "lever" in data['url']:
             handle_lever(driver=driver, data=data)
-        if "underdog.io" in data['url']:
+        elif "underdog.io" in data['url']:
             handle_underdog_fields(driver=driver, data=data)
+        else:
+            handle_greenhouse(driver=driver, data=data)
     except BaseException as error:
         # print(f"Error: {error}. Element: {el}")
         pass
