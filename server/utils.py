@@ -79,16 +79,21 @@ def field_match(option, data):
     count = 0
     for f in option_arr:
         for d in data_arr:
-            if f == d:
+            if f.lower() == d.lower():
                 count += 1
     return count / len(option_arr) >= .35
 
 def handle_select_child_options(element, user_data):
     options = element.find_elements(By.XPATH, '//li[@role="option"]')
+
+    if (len(options)) == 0:
+        options = element.find_elements(By.TAG_NAME, 'option')
+
     for option in options:
         if field_match(option=option.get_attribute('innerText'), data=user_data):
             option.click()
             return
+
 
 def handle_greenhouse_autocomplete(driver, data, field_name):
 
@@ -105,6 +110,10 @@ def handle_greenhouse_autocomplete(driver, data, field_name):
             # Handle Autocomplete Fields
             if "School" in field_name:
                 handle_input(field.find_element(By.TAG_NAME, "input"), data['user']['school'])
+            if "Are you 18" in field_name:
+                handle_input(field.find_element(By.TAG_NAME, "input"), "Yes")
+            if "authorized" in field_name:
+                handle_input(field.find_element(By.TAG_NAME, "input"), data['user']['workAuthorization'])
             if "Degree" in field_name or "degree" in field_name:
                 handle_input(field.find_element(By.TAG_NAME, "input"), "Associate")
             if "Discipline" in field_name:
@@ -112,12 +121,13 @@ def handle_greenhouse_autocomplete(driver, data, field_name):
         except BaseException:
             continue
     
-def handle_hidden_input(element, user_data):
-    input = element.find_element(By.XPATH, './label/input[@type="text"]')
-    input.send_keys(user_data)
+def handle_input_field(element, user_data, xpath):
+    input = element.find_element(By.XPATH, xpath)
+    if input.get_attribute('value') == "":
+        input.send_keys(user_data)
 
 def handle_hidden_field(field_name, element, driver, data):
-    # Handle Hidden Fields
+    # Handle Hidden Option Fields
     if "security clearance" in field_name:
         handle_select_child_options(element, data['user']['securityClearance'])
     if "willing to relocate" in field_name:
@@ -138,22 +148,17 @@ def handle_hidden_field(field_name, element, driver, data):
         handle_select_child_options(element, data['user']['gender'])
 
     # Handle Hidden Input Fields
+    x_path = './label/input[@type="text"]'
     if "LinkedIn" in field_name:
-        handle_hidden_input(element, data['user']['linkedin'])
+        handle_input_field(element, data['user']['linkedin'], x_path)
         sleep(1.5)
     if "Wesbite" in field_name:
-        handle_hidden_input(element, data['user']['website'])
+        handle_input_field(element, data['user']['website'], x_path)
         sleep(1.5)
-    if "Your name" in field_name:
-        handle_hidden_input(element, f"{data['user']['firstName']} {data['user']['lastName']}")
-    if "Today's date" in field_name:
-        handle_hidden_input(element, datetime.today().strftime('%m/%d/%Y'))
-    if "annual compensation" in field_name or "looking to start" in field_name or "salary" in field_name:
-        handle_hidden_input(element, 'Open')
     if "country of residence" in field_name:
-        handle_hidden_input(element, data['user']['country'])
+        handle_input_field(element, data['user']['country'], x_path)
     if "hear about this job" in field_name:
-        handle_hidden_input(element, "LinkedIn")
+        handle_input_field(element, "LinkedIn", x_path)
     if "require" in field_name and "immigration" in field_name:
         btns = driver.find_elements(By.CLASS_NAME, "application-answer-alternative")
         for btn in btns:
@@ -176,17 +181,40 @@ def handle_greenhouse(driver, data):
             # print(err)
             continue
 
+def handle_lever_fields(field_name, element, data):
+    # Handle Inputs
+    x_path = './label/div/input'
+    if "City" in field_name:
+        handle_input_field(element,data['user']['city'], x_path)
+    if "Your name" in field_name:
+        handle_input_field(element, f"{data['user']['firstName']} {data['user']['lastName']}", x_path)
+    if "Today's date" in field_name:
+        handle_input_field(element, datetime.today().strftime('%m/%d/%Y'), x_path)
+    if "annual compensation" in field_name or "looking to start" in field_name or "salary" in field_name:
+        handle_input_field(element, 'Open', x_path)
+
+    # Handle Selects
+    if "Country" in field_name:
+        handle_select_child_options(element, data['user']['country'])
+    if "job posting" in field_name:
+        handle_select_child_options(element, "linkedin")
+    if "State" in field_name:
+        handle_select_child_options(element, data['user']['state'])
+
+
 def handle_lever(driver, data):
-    dropdowns = driver.find_elements(By.CLASS_NAME, "application-question")
-    for element in dropdowns:
+    elements = driver.find_elements(By.CLASS_NAME, "application-question")
+
+    elements += driver.find_elements(By.CLASS_NAME, "custom-question")
+
+    elements += driver.find_elements(By.CLASS_NAME, "application-dropdown")
+
+    elements += driver.find_elements(By.CLASS_NAME, "application-additional")
+
+    for element in elements:
         try:
-            element.click()
-            field_name = element.get_attribute('innerText')
-
-            options = driver.find_elements(
-                    By.TAG_NAME, "input")
-
-            handle_hidden_field(options, field_name, element, driver, data)
+            field_name =  element.find_element(By.XPATH, "./label").get_attribute('innerText')
+            handle_lever_fields(field_name, element, data)
 
         except BaseException as err:
             # print(err)
