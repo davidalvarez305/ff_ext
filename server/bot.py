@@ -3,7 +3,7 @@ from selenium import webdriver
 from selenium.webdriver.support.wait import WebDriverWait
 from selenium.webdriver.firefox.options import Options
 from selenium.webdriver.common.by import By
-from utils import handle_greenhouse, handle_lever, handle_underdog_fields
+from utils import click_preapplication_button, handle_bamboo, handle_greenhouse, handle_lever, handle_underdog_fields
 
 
 def get_data(el):
@@ -26,6 +26,9 @@ def execute(data):
 
     WebDriverWait(driver, timeout=10).until(lambda d: d.find_element(By.TAG_NAME,"html"))
 
+    if "bamboohr" in data['url']:
+        click_preapplication_button(driver)
+
     for el in data['results']:
         try:
             if el['field'] == 'name':
@@ -43,15 +46,16 @@ def execute(data):
 
     # handle smartrecruiters.com
     # handle workdayjobs.com
-    # handle dice.com
 
     try:
+        if "bamboohr" in data['url']:
+            handle_bamboo(driver=driver, data=data)
+        if "greenhouse" in data['url']:
+            handle_greenhouse(driver=driver, data=data)
         if "lever" in data['url']:
             handle_lever(driver=driver, data=data)
         elif "underdog.io" in data['url']:
             handle_underdog_fields(driver=driver, data=data)
-        else:
-            handle_greenhouse(driver=driver, data=data)
     except BaseException as error:
-        # print(f"Error: {error}. Element: {el}")
+        print(f"Error: {error}. Element: {el}")
         pass

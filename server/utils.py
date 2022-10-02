@@ -1,6 +1,12 @@
 from datetime import datetime
+from lib2to3.pytree import Base
 from time import sleep
 from selenium.webdriver.common.by import By
+from list import COMMON_QUESTIONS
+
+def click_preapplication_button(driver):
+    button = driver.find_element(By.XPATH, "/html/body/div[2]/div[3]/div/div/button")
+    button.click()
 
 def auto_complete(driver, tag):
     hidden_input = driver.find_element(By.TAG_NAME, tag)
@@ -127,6 +133,7 @@ def handle_input_field(element, user_data, xpath):
         input.send_keys(user_data)
 
 def handle_hidden_field(field_name, element, driver, data):
+
     # Handle Hidden Option Fields
     if "security clearance" in field_name:
         handle_select_child_options(element, data['user']['securityClearance'])
@@ -233,4 +240,50 @@ def handle_underdog_fields(driver, data):
 
         except BaseException as err:
             # print(err)
+            continue
+
+def handle_textarea(element, user_data):
+    textarea = element.find_element(By.TAG_NAME, "textarea")
+    if textarea.get_attribute('value') == "":
+        textarea.send_keys(user_data)
+
+def handle_select_div(element, user_data):
+    options = element.find_elements(By.CLASS_NAME, "fab-MenuOption__row")
+    for option in options:
+        option_name = option.get_attribute('innerText')
+        print('option name: ', option_name)
+        if user_data.lower() in option_name.lower():
+            option.click()
+
+def handle_bamboo(driver, data):
+    elements = driver.find_elements(By.CLASS_NAME, "CandidateForm__row")
+
+    for element in elements:
+        try:
+            field_name = element.find_element(By.TAG_NAME, "label").get_attribute('innerText')
+
+            # Handle Radiobuttons
+            if "Veteran" in field_name:
+                btns = driver.find_elements(By.CLASS_NAME, "fab-Radio")
+                for btn in btns:
+                    btn_text = btn.get_attribute('innerText')
+                    if data['user']['veteranStatus'].lower() in btn_text.lower():
+                        btn.click()
+
+            # Handle Selects
+            if "Gender" in field_name:
+                handle_select_div(element, data['user']['gender'])
+            elif "Disability" in field_name:
+                handle_select_div(element, data['user']['disabilityStatus'])
+            elif "Ethnicity" in field_name:
+                handle_select_div(element, data['user']['race'])
+
+            # Handle Inputs
+            else:
+                for question in COMMON_QUESTIONS:
+                    if question['question'].lower() in field_name.lower():
+                        field = question['data']
+                        handle_textarea(element, data['user'][f"{field}"])
+
+        except BaseException as err:
             continue
