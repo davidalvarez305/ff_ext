@@ -3,7 +3,7 @@ from selenium import webdriver
 from selenium.webdriver.support.wait import WebDriverWait
 from selenium.webdriver.firefox.options import Options
 from selenium.webdriver.common.by import By
-from utils import click_preapplication_button, handle_bamboo, handle_greenhouse, handle_lever, handle_underdog_fields
+from utils import click_preapplication_button, handle_bamboo, handle_greenhouse, handle_lever, handle_smartrecruiters, handle_underdog_fields, upload_smartrecruiters_resume
 
 
 def get_data(el):
@@ -29,25 +29,32 @@ def execute(data):
     if "bamboohr" in data['url']:
         click_preapplication_button(driver)
 
+    if "smartrecruiters" in data['url']:
+        upload_smartrecruiters_resume(driver=driver)
+
     for el in data['results']:
         try:
             if el['field'] == 'name':
                 name = driver.find_element(By.NAME, el['name'])
-                name.send_keys(get_data(el))
+                if name.get_attribute('value') == "":
+                    name.send_keys(get_data(el))
             if el['field'] == 'id':
                 name = driver.find_element(By.ID, el['name'])
-                name.send_keys(get_data(el))
+                if name.get_attribute('value') == "":
+                    name.send_keys(get_data(el))
             if el['field'] == 'className':
                 name = driver.find_element(By.CLASS_NAME, el['name'])
-                name.send_keys(get_data(el))
+                if name.get_attribute('value') == "":
+                    name.send_keys(get_data(el))
         except BaseException as error:
             # print(f"Error: {error}. Element: {el}")
             continue
 
-    # handle smartrecruiters.com
     # handle workdayjobs.com
 
     try:
+        if "smartrecruiters" in data['url']:
+            handle_smartrecruiters(driver=driver, data=data)
         if "bamboohr" in data['url']:
             handle_bamboo(driver=driver, data=data)
         if "greenhouse" in data['url']:

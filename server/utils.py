@@ -1,8 +1,10 @@
 from datetime import datetime
 from lib2to3.pytree import Base
+import os
 from time import sleep
 from selenium.webdriver.common.by import By
 from list import COMMON_QUESTIONS
+from selenium.webdriver.common.keys import Keys
 
 def click_preapplication_button(driver):
     button = driver.find_element(By.XPATH, "/html/body/div[2]/div[3]/div/div/button")
@@ -290,3 +292,126 @@ def handle_bamboo(driver, data):
         except BaseException as err:
             print(err)
             continue
+
+def handle_smart_autocomplete_fields(input, user_data):
+    input.send_keys(user_data)
+    sleep(1)
+    input.send_keys(Keys.ARROW_DOWN)
+    input.send_keys(Keys.RETURN)
+
+def handle_calendar_select(driver, user_data):
+    elements = driver.find_elements(By.CLASS_NAME, 'mat-calendar-body-cell-content')
+    for el in elements:
+        if user_data in el.get_attribute('textContent'):
+            el.click()
+            return
+
+def upload_smartrecruiters_resume(driver):
+    resume_upload = driver.find_element(By.XPATH, '//input[@class="file-upload-input"]')
+    resume_upload.send_keys(os.environ.get('RESUME_PATH'))
+    sleep(5)
+
+def handle_smartrecruiters(driver, data):
+    sleep(1)
+
+    # Delete Resume Fields
+    field_options = driver.find_elements(By.XPATH, '//button[@aria-label="See options"]')
+    for option in field_options:
+        option.click()
+
+        # Click 'Delete Position in Dropdown & Wait for Dialogue Box to Open'
+        delete_position = driver.find_element(By.XPATH, '//button[@data-test="entry-delete"]')
+        delete_position.click()
+        sleep(2)
+
+        yes_button = driver.find_element(By.XPATH, '//mat-dialog-container/oc-yes-no/div/div/button[2]')
+        yes_button.click()
+
+    sections = driver.find_elements(By.CLASS_NAME, 'form-section')
+
+    for section in sections:
+        try:
+            section_header = section.find_element(By.TAG_NAME, 'h3').get_attribute('innerText')
+            
+            if "Experience" in section_header:
+                button = section.find_element(By.TAG_NAME, 'button')
+                button.click()
+
+                form_fields = section.find_elements(By.CLASS_NAME, 'form-control')
+
+                for field in form_fields:
+                    label = field.find_element(By.TAG_NAME, 'label').get_attribute('innerText')
+
+                    if "Title" in label:
+                        input = field.find_element(By.TAG_NAME, 'input')
+                        handle_smart_autocomplete_fields(input, os.environ.get('TITLE'))
+                    if "Company" in label:
+                        input = field.find_element(By.TAG_NAME, 'input')
+                        handle_smart_autocomplete_fields(input, data['user']['currentCompany'])
+                    if "Office location" in label:
+                        input_element = field.find_element(By.CLASS_NAME, 'sr-location-autocomplete')
+                        handle_smart_autocomplete_fields(input_element, os.environ.get('COMPANY_LOCATION'))
+                    if "Description" in label:
+                        input_element = field.find_element(By.TAG_NAME, 'textarea')
+                        handle_smart_autocomplete_fields(input_element, os.environ.get('JOB_DESCRIPTION'))
+                    if "From" in label:
+                        work_here = field.find_element(By.XPATH, '//*[@data-test="experience-current"]')
+                        work_here.click()
+                        
+                        calendar_button = field.find_element(By.XPATH, '//button[@aria-label="Open calendar"]')
+                        calendar_button.click()
+
+                        # Select Year
+                        handle_calendar_select(driver, os.environ.get('JOB_START_YEAR'))
+                        # Select Month
+                        handle_calendar_select(driver, os.environ.get('JOB_START_MONTH'))
+
+                        # Save
+                        save_button = field.find_element(By.XPATH, '//button[@data-test="experience-save"]')
+                        save_button.click()
+
+            if "Education" in section_header:
+                button = section.find_element(By.TAG_NAME, 'button')
+                button.click()
+
+                form_fields = section.find_elements(By.CLASS_NAME, 'form-control')
+
+                for field in form_fields:
+                    label = field.find_element(By.TAG_NAME, 'label').get_attribute('innerText')
+
+                    if "Institution" in label:
+                        input = field.find_element(By.TAG_NAME, 'input')
+                        handle_smart_autocomplete_fields(input, data['user']['school'])
+                    if "Major" in label:
+                        input = field.find_element(By.TAG_NAME, 'input')
+                        input.send_keys(data['user']['discipline'])
+                    if "Degree" in label:
+                        input = field.find_element(By.TAG_NAME, 'input')
+                        input.send_keys(data['user']['degree'])
+                    if "School location" in label:
+                        input_element = field.find_element(By.CLASS_NAME, 'sr-location-autocomplete')
+                        handle_smart_autocomplete_fields(input_element, os.environ.get('SCHOOL_LOCATION'))
+                    if "Description" in label:
+                        input_element = field.find_element(By.TAG_NAME, 'textarea')
+                        handle_smart_autocomplete_fields(input_element, os.environ.get('DEGREE_DESCRIPTION'))
+                    if "From" in label:
+                        work_here = field.find_element(By.XPATH, '//*[@data-test="education-current"]')
+                        work_here.click()
+                        
+                        calendar_button = field.find_element(By.XPATH, '//button[@aria-label="Open calendar"]')
+                        calendar_button.click()
+
+                        # Select Year
+                        handle_calendar_select(driver, os.environ.get('SCHOOL_START_YEAR'))
+                        # Select Month
+                        handle_calendar_select(driver, os.environ.get('SCHOOL_START_MONTH'))
+
+                        # Save
+                        save_button = field.find_element(By.XPATH, '//button[@data-test="education-save"]')
+                        save_button.click()
+
+
+        except BaseException as err:
+            print(err)
+            continue
+        
