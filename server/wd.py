@@ -72,26 +72,24 @@ def select_options(driver, attr, input_id):
 
 def handle_multiple_input(driver, element, skills):
 
-    def handle_multi_select(driver, skill):
-        options = driver.find_elements(By.XPATH, '//*[@data-automation-id="promptOption"]')
-
+    def handle_multi_select(skill, options):
         for option in options:
-            if skill in option.get_attribute('textContent'):
+            if skill in option.get_attribute('innerText'):
                 option.click()
+                return skill
+        
+        return ""
 
-    input_data_id = element.get_attribute('data-automation-id')
+    for skill in skills:
+        element.send_keys(skill)
+        element.send_keys(Keys.RETURN)
+        sleep(0.5)
 
-    if "searchBox" in input_data_id:
-        for skill in skills:
-            element.send_keys(skill)
-            element.send_keys(Keys.RETURN)
-            sleep(0.5)
-            handle_multi_select(driver=driver, skill=skill)
-    else:
-        for skill in skills:
-            element.send_keys(skill)
-            element.send_keys(Keys.RETURN)
-            sleep(0.5)
+        options = driver.find_elements(By.XPATH, '//*[@data-automation-id="promptOption"]')
+        if len(options) > 0:
+            selected = handle_multi_select(skill=skill, options=options)
+            if selected == "":
+                element.send_keys(Keys.CLEAR)
 
 
 def handle_inputs(driver):
@@ -210,8 +208,13 @@ def click_save_and_continue(driver):
         driver.find_element(
         By.XPATH, '//button[@data-automation-id="bottom-navigation-next-button"]').click()
         sleep(3)
-    except BaseException:
-        input("Handle the error & press enter.")
+
+        error = driver.find_elements(By.XPATH, '//*[@data-automation-id="errorBanner"]')
+
+        if len(error) > 0:
+            input("Handle the error & press enter.")
+    except BaseException as err:
+        print(err)
 
 def perform_action(driver, xpath, action, *args, **kwargs):
     try:
