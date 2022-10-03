@@ -10,7 +10,7 @@ from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.common.action_chains import ActionChains
 
 from list import NO_APPLICATION_QUESTIONS, YES_APPLICATION_QUESTIONS
-URL = 'https://capitalone.wd1.myworkdayjobs.com/Capital_One/login?redirect=%2FCapital_One%2Fjob%2FRichmond-VA%2FSenior-Software-Engineer--Full-Stack-Remote-Eligible_R156218-1%2Fapply%3Futm_campaign%3Denterprise_tech_2022%26utm_medium%3Djobad%26utm_content%3Dpj_board%26utm_source%3Dlinkedin%2520slotted%26p_uid%3D5uCFnQkcK0%26source%3Drd_linkedin_job_posting_tm%26p_sid%3DVpVix0b%26ss%3Dpaid%26dclid%3DCMKRnqaOwvoCFQHihwodcgsCbw'
+URL = 'https://vmware.wd1.myworkdayjobs.com/VMware/login?redirect=%2FVMware%2Fjob%2FRemote---United-States-of-America%2FFrontend-Engineer_R2124891%2Fapply%3F%26source%3DLIPJ'
 
 
 def click_hidden_button(driver, btn_xpath):
@@ -29,6 +29,9 @@ def enter_login(driver, btn_xpath):
             label = element.find_element(
                 By.TAG_NAME, "label").get_attribute('innerText')
             input = element.find_element(By.TAG_NAME, 'input')
+
+            if "have read the" in label:
+                input.click()
 
             if "Email" in label:
                 input.send_keys(os.environ.get('EMAIL'))
@@ -87,6 +90,8 @@ def handle_inputs(driver):
                     label = driver.find_element(
                         By.XPATH, f'//label[@for="{input_id}"]').get_attribute('innerText')
 
+                    if "No" in label:
+                        el.click()
                     if "First Name" in label:
                         el.send_keys('David')
                     if "Last Name" in label:
@@ -94,13 +99,13 @@ def handle_inputs(driver):
                     if label == "Name":
                         el.send_keys('David Alvarez')
                     if "Address Line 1" in label:
-                        el.send_keys('MY STREET ADDRESS')
+                        el.send_keys(os.environ.get('ADDRESS'))
                     if "City" in label:
-                        el.send_keys('MY CITI')
+                        el.send_keys(os.environ.get('COMPANY_LOCATION'))
                     if "Postal Code" in label:
-                        el.send_keys('MY ZIP CODE')
+                        el.send_keys(os.environ.get('ZIP_CODE'))
                     if "Phone Number" in label:
-                        el.send_keys('MY NUMBER')
+                        el.send_keys(os.environ.get('PHONE_NUMBER'))
                     if "Job Title" in label:
                         el.send_keys(os.environ.get('TITLE'))
                     if "Company" in label:
@@ -196,79 +201,84 @@ def main():
         lambda d: d.find_element(By.TAG_NAME, "html"))
     sleep(2)
 
-    # Navigate to Create Account
+    # Navigate to Create Account & Create Account
+    # click_hidden_button(driver, '//button[@data-automation-id="createAccountLink"]')
+
     # enter_login(driver, '//button[@data-automation-id="createAccountSubmitButton"]')
     # input("Verify email and come back: ")
+
+    # Return to Sign In Screen
+    # click_hidden_button(driver, '//button[@data-automation-id="signInLink"]')
 
     # Submit & Verify Email -- Then Login
     enter_login(driver, '//button[@data-automation-id="signInSubmitButton"]')
     sleep(5)
 
     # Apply Manually
-    # click_hidden_button(driver, '//button[@data-automation-id="applyManually"]')
+    click_hidden_button(driver, '//*[@data-automation-id="applyManually"]')
+    sleep(5)
 
     # Enter Fields
-    # handle_inputs(driver)
+    handle_inputs(driver)
 
     # Save & Continue
     click_save_and_continue(driver)
 
     # Add Work Experience
-    """     driver.find_element(
-            By.XPATH, '//button[@aria-label="Add Work Experience"]').click()
+    driver.find_element(
+        By.XPATH, '//button[@aria-label="Add Work Experience"]').click()
 
-        # Click "I Currently Work Here"
-        driver.find_element(
-            By.XPATH, '//input[@data-automation-id="currentlyWorkHere"]').click()
+    # Click "I Currently Work Here"
+    driver.find_element(
+        By.XPATH, '//input[@data-automation-id="currentlyWorkHere"]').click()
 
-        # Click Calendar for Dates & Handle Dates
-        driver.find_element(
-            By.XPATH, '//*[@data-automation-id="dateIcon"]').click()
-        get_correct_year(driver)
+    # Click Calendar for Dates & Handle Dates
+    driver.find_element(
+        By.XPATH, '//*[@data-automation-id="dateIcon"]').click()
+    get_correct_year(driver)
 
-        months = driver.find_elements(By.TAG_NAME, 'li')
+    months = driver.find_elements(By.TAG_NAME, 'li')
 
-        for month in months:
-            if month.get_attribute('innerText') == "Nov":
-                month.click()
-                break
+    for month in months:
+        if month.get_attribute('innerText') == "Nov":
+            month.click()
+            break
 
-        # Add Education
-        driver.find_element(
-            By.XPATH, '//button[@aria-label="Add Education"]').click()
+    # Add Education
+    driver.find_element(
+        By.XPATH, '//button[@aria-label="Add Education"]').click()
 
-        # Upload Resume
-        driver.find_element(
-            By.XPATH, '//input[@data-automation-id="file-upload-input-ref"]').send_keys(os.environ.get('RESUME_PATH'))
+    # Upload Resume
+    driver.find_element(
+        By.XPATH, '//input[@data-automation-id="file-upload-input-ref"]').send_keys(os.environ.get('RESUME_PATH'))
 
-        # Add Websites
-        driver.find_element(
-            By.XPATH, '//button[@aria-label="Add Websites"]').click()
-        driver.find_element(
-            By.XPATH, '//input[@data-automation-id="website"]').send_keys('https://github.com/davidalvarez305')
+    # Add Websites
+    driver.find_element(
+        By.XPATH, '//button[@aria-label="Add Websites"]').click()
+    driver.find_element(
+        By.XPATH, '//input[@data-automation-id="website"]').send_keys('https://github.com/davidalvarez305')
 
-        # Add LinkedIn
-        driver.find_element(
-            By.XPATH, '//input[@data-automation-id="linkedinQuestion"]').send_keys(os.environ.get('LINKED_URL'))
+    # Add LinkedIn
+    driver.find_element(
+        By.XPATH, '//input[@data-automation-id="linkedinQuestion"]').send_keys(os.environ.get('LINKED_URL'))
 
-        # Add Languages
-        driver.find_element(
-            By.XPATH, '//button[@aria-label="Add Languages"]').click()
+    # Add Languages
+    driver.find_element(
+        By.XPATH, '//button[@aria-label="Add Languages"]').click()
 
-        handle_inputs(driver) """
+    handle_inputs(driver)
 
     # Save & Continue
     click_save_and_continue(driver)
 
     # Handle Application Questions
-    # handle_inputs(driver)
+    handle_inputs(driver)
 
     # Save & Continue
     click_save_and_continue(driver)
 
     # Handle Voluntary Disclosures
-    # handle_inputs(driver)
-    input("Hold it partner: ")
+    handle_inputs(driver)
 
     # Save & Continue
     click_save_and_continue(driver)
