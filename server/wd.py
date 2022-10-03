@@ -14,9 +14,12 @@ URL = 'https://vmware.wd1.myworkdayjobs.com/VMware/login?redirect=%2FVMware%2Fjo
 
 
 def click_hidden_button(driver, btn_xpath):
-    submit_button = driver.find_element(By.XPATH, btn_xpath)
-    actions = ActionChains(driver=driver)
-    actions.move_to_element(submit_button).click().perform()
+    try:
+        submit_button = driver.find_element(By.XPATH, btn_xpath)
+        actions = ActionChains(driver=driver)
+        actions.move_to_element(submit_button).click().perform()
+    except BaseException:
+        pass
 
 
 def enter_login(driver, btn_xpath):
