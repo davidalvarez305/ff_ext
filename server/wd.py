@@ -85,6 +85,14 @@ def handle_inputs(driver):
     elements = driver.find_elements(By.TAG_NAME, 'input')
     elements += driver.find_elements(By.TAG_NAME, 'button')
 
+    def input_field(element, user_data):
+        try:
+            if element.get_attribute('value') == "":
+                element.send_keys(user_data)
+        except BaseException:
+            pass
+
+
     for el in elements:
         try:
             if el.get_attribute('tagName') == "INPUT":
@@ -96,33 +104,33 @@ def handle_inputs(driver):
                     if "No" in label:
                         el.click()
                     if "First Name" in label:
-                        el.send_keys('David')
+                        input_field(el, 'David')
                     if "Last Name" in label:
-                        el.send_keys('Alvarez')
+                        input_field(el, 'Alvarez')
                     if label == "Name":
-                        el.send_keys('David Alvarez')
+                        input_field(el, 'David Alvarez')
                     if "Address Line 1" in label:
-                        el.send_keys(os.environ.get('ADDRESS'))
+                        input_field(el, os.environ.get('ADDRESS'))
                     if "City" in label:
-                        el.send_keys(os.environ.get('COMPANY_LOCATION'))
+                        input_field(el, os.environ.get('COMPANY_LOCATION'))
                     if "Postal Code" in label:
-                        el.send_keys(os.environ.get('ZIP_CODE'))
+                        input_field(el, os.environ.get('ZIP_CODE'))
                     if "Phone Number" in label:
-                        el.send_keys(os.environ.get('PHONE_NUMBER'))
+                        input_field(el, os.environ.get('PHONE_NUMBER'))
                     if "Job Title" in label:
-                        el.send_keys(os.environ.get('TITLE'))
+                        input_field(el, os.environ.get('TITLE'))
                     if "Company" in label:
-                        el.send_keys('CURRENT COMPANY')
+                        input_field(el, 'CURRENT COMPANY')
                     if "Location" in label:
-                        el.send_keys(os.environ.get('COMPANY_LOCATION'))
+                        input_field(el, os.environ.get('COMPANY_LOCATION'))
                     if "currently working here" in label or "No, I Don't Have A Disability" in label:
                         el.click()
                     if "fluent in this language" in label or "terms and conditions" in label:
                         el.click()
                     if "Role Description" in label:
-                        el.send_keys(os.environ.get('JOB_DESCRIPTION'))
+                        input_field(el, os.environ.get('JOB_DESCRIPTION'))
                     if "School or University" in label:
-                        el.send_keys('MY UNI')
+                        input_field(el, os.environ.get('UNIVERSITY'))
                     if "Field of Study" in label:
                         handle_multiple_input(el, ['Marketing', 'Advertising'])
                     if "Skills" in label:
@@ -188,13 +196,14 @@ def click_save_and_continue(driver):
         By.XPATH, '//button[@data-automation-id="bottom-navigation-next-button"]').click()
     sleep(3)
 
-def perform_action(driver, xpath, action, keys):
+def perform_action(driver, xpath, action, *args, **kwargs):
     try:
         element = driver.find_element(By.XPATH, xpath)
         if action == "click":
             element.click()
 
         if action == "send keys":
+            keys = kwargs.get('keys', None)
             element.send_keys(keys)
 
     except BaseException:
