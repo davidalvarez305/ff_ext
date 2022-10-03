@@ -63,7 +63,7 @@ def select_options(driver, attr, input_id):
 
             elements = driver.find_elements(By.TAG_NAME, 'li')
             for el in elements:
-                if attr in el.get_attribute('textContent'):
+                if attr.lower() in el.get_attribute('textContent').lower():
                     el.click()
                     break
     except BaseException as err:
@@ -146,7 +146,7 @@ def handle_inputs(driver):
                     if "Field of Study" in label:
                         handle_multiple_input(driver, el, ['Marketing', 'Advertising'])
                     if "Skills" in label:
-                        handle_multiple_input(driver, el, ['Javascript', 'Python', 'Go', 'AWS', 'GCP',
+                        handle_multiple_input(driver, el, ['Javascript', 'Python', 'Go', 'Amazon Web Services', 'Google Cloud Platform',
                                               'Docker', 'Linux', 'Nginx', "SQL", "GraphQL", 'Postgres', 'MongoDB'])
 
             if el.get_attribute('tagName') == "BUTTON":
@@ -171,7 +171,7 @@ def handle_inputs(driver):
                                        attr="Male")
                     if "Race" in label:
                         select_options(driver=driver, input_id=input_id,
-                                       attr="Hispanic")
+                                       attr="Hispanic or Latino (United States of America)")
                     if "Language" in label:
                         select_options(driver=driver, input_id=input_id,
                                        attr="English")
