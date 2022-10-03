@@ -185,6 +185,18 @@ def click_save_and_continue(driver):
         By.XPATH, '//button[@data-automation-id="bottom-navigation-next-button"]').click()
     sleep(3)
 
+def perform_action(driver, xpath, action, keys):
+    try:
+        element = driver.find_element(By.XPATH, xpath)
+        if action == "click":
+            element.click()
+
+        if action == "send keys":
+            element.send_keys(keys)
+
+    except BaseException:
+        pass
+
 
 def main():
     load_dotenv()
@@ -225,16 +237,13 @@ def main():
     click_save_and_continue(driver)
 
     # Add Work Experience
-    driver.find_element(
-        By.XPATH, '//button[@aria-label="Add Work Experience"]').click()
+    perform_action(driver, '//button[@aria-label="Add Work Experience"]', "click")
 
     # Click "I Currently Work Here"
-    driver.find_element(
-        By.XPATH, '//input[@data-automation-id="currentlyWorkHere"]').click()
+    perform_action(driver, '//input[@data-automation-id="currentlyWorkHere"]', "click")
 
     # Click Calendar for Dates & Handle Dates
-    driver.find_element(
-        By.XPATH, '//*[@data-automation-id="dateIcon"]').click()
+    perform_action(driver, '//*[@data-automation-id="dateIcon"]', "click")
     get_correct_year(driver)
 
     months = driver.find_elements(By.TAG_NAME, 'li')
@@ -245,26 +254,20 @@ def main():
             break
 
     # Add Education
-    driver.find_element(
-        By.XPATH, '//button[@aria-label="Add Education"]').click()
+    perform_action(driver, '//button[@aria-label="Add Education"]', "click")
 
     # Upload Resume
-    driver.find_element(
-        By.XPATH, '//input[@data-automation-id="file-upload-input-ref"]').send_keys(os.environ.get('RESUME_PATH'))
+    perform_action(driver, '//input[@data-automation-id="file-upload-input-ref"]', "send keys", os.environ.get('RESUME_PATH'))
 
     # Add Websites
-    driver.find_element(
-        By.XPATH, '//button[@aria-label="Add Websites"]').click()
-    driver.find_element(
-        By.XPATH, '//input[@data-automation-id="website"]').send_keys('https://github.com/davidalvarez305')
+    perform_action(driver, '//button[@aria-label="Add Websites"]', "click")
+    perform_action(driver, '//input[@data-automation-id="website"]', "send keys", 'https://github.com/davidalvarez305')
 
     # Add LinkedIn
-    driver.find_element(
-        By.XPATH, '//input[@data-automation-id="linkedinQuestion"]').send_keys(os.environ.get('LINKED_URL'))
+    perform_action(driver, '//input[@data-automation-id="linkedinQuestion"]', "send keys", os.environ.get('LINKED_URL'))
 
     # Add Languages
-    driver.find_element(
-        By.XPATH, '//button[@aria-label="Add Languages"]').click()
+    perform_action(driver, '//button[@aria-label="Add Languages"]', "click")
 
     handle_inputs(driver)
 
@@ -287,9 +290,8 @@ def main():
     handle_inputs(driver)
 
     # Select Today's Date
-    driver.find_element(
-        By.XPATH, '//*[@data-automation-id="dateIcon"]').click()
-    driver.find_element(By.XPATH, '//*[@aria-selected="true"]').click()
+    perform_action(driver, '//*[@data-automation-id="dateIcon"]', "click")
+    perform_action(driver, '//*[@aria-selected="true"]', "click")
 
     # Save & Continue
     click_save_and_continue(driver)
