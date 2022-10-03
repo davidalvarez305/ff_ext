@@ -404,8 +404,7 @@ browser.storage.local
         nodes = [...nodes, ...nodeList];
       });
       findFields(nodes, data.user);
-      if (results.length > 2) {
-        console.log(results);
+      if (results.length > 2 || window.location.href.includes('myworkdayjobs.com')) {
         fetch("http://localhost:5000/", {
           method: "POST",
           body: JSON.stringify({

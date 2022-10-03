@@ -26,6 +26,10 @@ def execute(data):
 
     WebDriverWait(driver, timeout=10).until(lambda d: d.find_element(By.TAG_NAME,"html"))
 
+    if "workdayjobs" in data['url']:
+        # handle_workdayjobs(driver, data)
+        return
+
     if "bamboohr" in data['url']:
         click_preapplication_button(driver)
 
@@ -49,8 +53,6 @@ def execute(data):
         except BaseException as error:
             # print(f"Error: {error}. Element: {el}")
             continue
-
-    # handle workdayjobs.com
 
     try:
         if "smartrecruiters" in data['url']:
