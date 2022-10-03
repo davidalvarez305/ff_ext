@@ -33,9 +33,6 @@ def enter_login(driver, btn_xpath):
                 By.TAG_NAME, "label").get_attribute('innerText')
             input = element.find_element(By.TAG_NAME, 'input')
 
-            if "have read the" in label:
-                input.click()
-
             if "Email" in label:
                 input.send_keys(os.environ.get('EMAIL'))
 
@@ -50,7 +47,6 @@ def enter_login(driver, btn_xpath):
 
 def select_options(driver, attr, input_id):
     try:
-
         if "Fluent" in attr:
 
             btn_xpath = f'//button[@id="{input_id}"]'
@@ -74,16 +70,34 @@ def select_options(driver, attr, input_id):
         print(err)
 
 
-def handle_multiple_input(input, skills):
-    for skill in skills:
-        input.send_keys(skill)
-        input.send_keys(Keys.RETURN)
-        sleep(0.5)
+def handle_multiple_input(driver, element, skills):
+
+    def handle_multi_select(driver, skill):
+        options = driver.find_elements(By.XPATH, '//*[@data-automation-id="promptOption"]')
+
+        for option in options:
+            if skill in option.get_attribute('textContent'):
+                option.click()
+
+    input_data_id = element.get_attribute('data-automation-id')
+
+    if "searchBox" in input_data_id:
+        for skill in skills:
+            element.send_keys(skill)
+            element.send_keys(Keys.RETURN)
+            sleep(0.5)
+            handle_multi_select(driver=driver, skill=skill)
+    else:
+        for skill in skills:
+            element.send_keys(skill)
+            element.send_keys(Keys.RETURN)
+            sleep(0.5)
 
 
 def handle_inputs(driver):
     elements = driver.find_elements(By.TAG_NAME, 'input')
     elements += driver.find_elements(By.TAG_NAME, 'button')
+    elements += driver.find_elements(By.TAG_NAME, 'textarea')
 
     def input_field(element, user_data):
         try:
@@ -95,7 +109,7 @@ def handle_inputs(driver):
 
     for el in elements:
         try:
-            if el.get_attribute('tagName') == "INPUT":
+            if el.get_attribute('tagName') == "INPUT" or el.get_attribute('tagName') == "TEXTAREA":
                 input_id = el.get_attribute('id')
                 if len(input_id) > 0:
                     label = driver.find_element(
@@ -132,9 +146,9 @@ def handle_inputs(driver):
                     if "School or University" in label:
                         input_field(el, os.environ.get('UNIVERSITY'))
                     if "Field of Study" in label:
-                        handle_multiple_input(el, ['Marketing', 'Advertising'])
+                        handle_multiple_input(driver, el, ['Marketing', 'Advertising'])
                     if "Skills" in label:
-                        handle_multiple_input(el, ['Javascript', 'Python', 'Go', 'AWS', 'GCP',
+                        handle_multiple_input(driver, el, ['Javascript', 'Python', 'Go', 'AWS', 'GCP',
                                               'Docker', 'Linux', 'Nginx', "SQL", "GraphQL", 'Postgres', 'MongoDB'])
 
             if el.get_attribute('tagName') == "BUTTON":
@@ -192,9 +206,12 @@ def get_correct_year(driver):
 
 
 def click_save_and_continue(driver):
-    driver.find_element(
+    try:
+        driver.find_element(
         By.XPATH, '//button[@data-automation-id="bottom-navigation-next-button"]').click()
-    sleep(3)
+        sleep(3)
+    except BaseException:
+        input("Handle the error & press enter.")
 
 def perform_action(driver, xpath, action, *args, **kwargs):
     try:
@@ -203,12 +220,19 @@ def perform_action(driver, xpath, action, *args, **kwargs):
             element.click()
 
         if action == "send keys":
-            keys = kwargs.get('keys', None)
+            keys = kwargs.get('keys')
             element.send_keys(keys)
 
     except BaseException:
         pass
 
+def click_add_fields(driver):
+    add_btns = driver.find_elements(By.XPATH, '//*[@data-automation-id="Add"]')
+    for btn in add_btns:
+        try:
+            btn.click()
+        except BaseException as err:
+            print(err)
 
 def main():
     load_dotenv()
@@ -248,8 +272,8 @@ def main():
     # Save & Continue
     click_save_and_continue(driver)
 
-    # Add Work Experience
-    perform_action(driver, '//button[@aria-label="Add Work Experience"]', "click")
+    # Click Add Work & Education Experience
+    click_add_fields(driver)
 
     # Click "I Currently Work Here"
     perform_action(driver, '//input[@data-automation-id="currentlyWorkHere"]', "click")
@@ -265,21 +289,14 @@ def main():
             month.click()
             break
 
-    # Add Education
-    perform_action(driver, '//button[@aria-label="Add Education"]', "click")
-
     # Upload Resume
-    perform_action(driver, '//input[@data-automation-id="file-upload-input-ref"]', "send keys", os.environ.get('RESUME_PATH'))
+    perform_action(driver, '//input[@data-automation-id="file-upload-input-ref"]', "send keys", keys=os.environ.get('RESUME_PATH'))
 
     # Add Websites
-    perform_action(driver, '//button[@aria-label="Add Websites"]', "click")
-    perform_action(driver, '//input[@data-automation-id="website"]', "send keys", 'https://github.com/davidalvarez305')
+    perform_action(driver, '//input[@data-automation-id="website"]', "send keys", keys='https://github.com/davidalvarez305')
 
     # Add LinkedIn
-    perform_action(driver, '//input[@data-automation-id="linkedinQuestion"]', "send keys", os.environ.get('LINKED_URL'))
-
-    # Add Languages
-    perform_action(driver, '//button[@aria-label="Add Languages"]', "click")
+    perform_action(driver, '//input[@data-automation-id="linkedinQuestion"]', "send keys", keys=os.environ.get('LINKED_URL'))
 
     handle_inputs(driver)
 

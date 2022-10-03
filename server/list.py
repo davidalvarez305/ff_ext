@@ -89,10 +89,12 @@ YES_APPLICATION_QUESTIONS = [
     "perform the essential functions of the job",
     "meet all of the Basic Qualifications",
     "Preferred Qualifications ",
+    "Cuba"
 ]
 
 NO_APPLICATION_QUESTIONS = [
     "require sponsorship",
+    "require immigration sponsorship",
     "Armed Forces of the United States of America (including the Reserves and National Guard)",
     "Have you previously worked at",
     "any relatives employed by ",
@@ -101,4 +103,7 @@ NO_APPLICATION_QUESTIONS = [
     "engaged or involved in any other business or employment other than",
     "Ernst & Young or KPMG",
     "Are you currently under any form of agreement or policy, with your current or previous employer(s)",
+    "Are you subject to a non-",
+    "have you been employed by a State, Local, or Federal government entity"
+    "Are you currently working for"
 ]
