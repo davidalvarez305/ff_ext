@@ -81,3 +81,24 @@ COMMON_QUESTIONS = [
         "question": "Portfolio",
         "data": "portfolio"
     }]
+
+YES_APPLICATION_QUESTIONS = [
+    "eligible",
+    "authorized",
+    "age 18",
+    "perform the essential functions of the job",
+    "meet all of the Basic Qualifications",
+    "Preferred Qualifications ",
+]
+
+NO_APPLICATION_QUESTIONS = [
+    "require sponsorship",
+    "Armed Forces of the United States of America (including the Reserves and National Guard)",
+    "Have you previously worked at",
+    "any relatives employed by ",
+    "any close personal friends employed by",
+    "contractor, consultant or temp",
+    "engaged or involved in any other business or employment other than",
+    "Ernst & Young or KPMG",
+    "Are you currently under any form of agreement or policy, with your current or previous employer(s)",
+]
