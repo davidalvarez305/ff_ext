@@ -86,6 +86,7 @@ def handle_inputs(driver):
                 if len(input_id) > 0:
                     label = driver.find_element(
                         By.XPATH, f'//label[@for="{input_id}"]').get_attribute('innerText')
+
                     if "First Name" in label:
                         el.send_keys('David')
                     if "Last Name" in label:
@@ -106,7 +107,7 @@ def handle_inputs(driver):
                         el.send_keys('CURRENT COMPANY')
                     if "Location" in label:
                         el.send_keys(os.environ.get('COMPANY_LOCATION'))
-                    if "currently working here" in label or "No, I Don't Have A Disability":
+                    if "currently working here" in label or "No, I Don't Have A Disability" in label:
                         el.click()
                     if "fluent in this language" in label or "terms and conditions" in label:
                         el.click()
