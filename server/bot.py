@@ -3,6 +3,7 @@ from selenium import webdriver
 from selenium.webdriver.support.wait import WebDriverWait
 from selenium.webdriver.firefox.options import Options
 from selenium.webdriver.common.by import By
+from wd import handle_workdayjobs
 from utils import click_preapplication_button, handle_bamboo, handle_greenhouse, handle_lever, handle_smartrecruiters, handle_underdog_fields, upload_smartrecruiters_resume
 
 
@@ -27,7 +28,7 @@ def execute(data):
     WebDriverWait(driver, timeout=10).until(lambda d: d.find_element(By.TAG_NAME,"html"))
 
     if "workdayjobs" in data['url']:
-        # handle_workdayjobs(driver, data)
+        handle_workdayjobs(driver, data)
         return
 
     if "bamboohr" in data['url']:

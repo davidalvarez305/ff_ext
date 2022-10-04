@@ -1,16 +1,12 @@
-from lib2to3.pytree import Base
 import os
 from time import sleep
-from dotenv import load_dotenv
 from selenium import webdriver
 from selenium.webdriver.support.wait import WebDriverWait
-from selenium.webdriver.firefox.options import Options
 from selenium.webdriver.common.by import By
 from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.common.action_chains import ActionChains
 
 from list import NO_APPLICATION_QUESTIONS, YES_APPLICATION_QUESTIONS
-URL = 'https://vmware.wd1.myworkdayjobs.com/VMware/login?redirect=%2FVMware%2Fjob%2FRemote---United-States-of-America%2FFrontend-Engineer_R2124891%2Fapply%3F%26source%3DLIPJ'
 
 
 def click_hidden_button(driver, btn_xpath):
@@ -237,16 +233,8 @@ def click_add_fields(driver):
         except BaseException as err:
             print(err)
 
-def main():
-    load_dotenv()
-    options = Options()
-    user_agent = str(os.environ.get('USER_AGENT'))
-    # options.add_argument("--headless")
-    options.add_argument(f'user-agent={user_agent}')
-
-    driver = webdriver.Firefox()
-
-    driver.get(URL)
+def handle_workdayjobs(driver, data):
+    driver.get(data['url'])
 
     WebDriverWait(driver, timeout=10).until(
         lambda d: d.find_element(By.TAG_NAME, "html"))
@@ -327,6 +315,3 @@ def main():
 
     # Save & Continue
     click_save_and_continue(driver)
-
-
-main()
