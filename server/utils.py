@@ -143,7 +143,7 @@ def handle_hidden_field(field_name, element, driver, data):
         handle_select_child_options(element, "No")
     if "race" in field_name:
         handle_select_child_options(element, data['user']['race'])
-    if "authorized":
+    if "authorized" in field_name or "legal right to work" in field_name:
         handle_select_child_options(element, data['user']['workAuthorization'])
     if "sponsorship" in field_name:
         handle_select_child_options(element, data['user']['immigrationSponsorship'])
@@ -155,6 +155,10 @@ def handle_hidden_field(field_name, element, driver, data):
         handle_select_child_options(element, data['user']['isHispanic'])
     if "Gender" in field_name:
         handle_select_child_options(element, data['user']['gender'])
+    if "hear about this job" in field_name:
+        handle_select_child_options(element, data['user']['applicationReferral'])
+    if "Do you have any relatives currently employed by" in field_name:
+        handle_select_child_options(element, "No")
 
     # Handle Hidden Input Fields
     x_path = './label/input[@type="text"]'
@@ -168,6 +172,8 @@ def handle_hidden_field(field_name, element, driver, data):
         handle_input_field(element, data['user']['country'], x_path)
     if "hear about this job" in field_name:
         handle_input_field(element, "LinkedIn", x_path)
+    if "salary" in field_name:
+        handle_input_field(element, data['user']['salary'], x_path)
     if "require" in field_name and "immigration" in field_name:
         btns = driver.find_elements(By.CLASS_NAME, "application-answer-alternative")
         for btn in btns:
