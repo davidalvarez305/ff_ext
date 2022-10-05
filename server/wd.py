@@ -241,13 +241,13 @@ def handle_workdayjobs(driver, data):
     sleep(2)
 
     # Navigate to Create Account & Create Account
-    # click_hidden_button(driver, '//button[@data-automation-id="createAccountLink"]')
+    click_hidden_button(driver, '//button[@data-automation-id="createAccountLink"]')
 
     # enter_login(driver, '//button[@data-automation-id="createAccountSubmitButton"]')
-    # input("Verify email and come back: ")
+    input("Verify email and come back: ")
 
     # Return to Sign In Screen
-    # click_hidden_button(driver, '//button[@data-automation-id="signInLink"]')
+    click_hidden_button(driver, '//button[@data-automation-id="signInLink"]')
 
     # Submit & Verify Email -- Then Login
     enter_login(driver, '//button[@data-automation-id="signInSubmitButton"]')

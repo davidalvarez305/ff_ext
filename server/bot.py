@@ -1,4 +1,5 @@
 import os
+from time import sleep
 from selenium import webdriver
 from selenium.webdriver.support.wait import WebDriverWait
 from selenium.webdriver.firefox.options import Options
@@ -25,7 +26,7 @@ def execute(data):
 
     driver.get(data['url'])
 
-    WebDriverWait(driver, timeout=10).until(lambda d: d.find_element(By.TAG_NAME,"html"))
+    sleep(5)
 
     if "workdayjobs" in data['url']:
         handle_workdayjobs(driver, data)
@@ -54,6 +55,9 @@ def execute(data):
         except BaseException as error:
             # print(f"Error: {error}. Element: {el}")
             continue
+
+        # handle ashbyhq.com
+        # handle adp.com
 
     try:
         if "smartrecruiters" in data['url']:
