@@ -29,6 +29,15 @@ def recurse(element: WebElement):
     else:
         return element
         
+def find_form_fields(driver):
+    form = driver.find_element(By.TAG_NAME, 'form')
+    form_elements = form.find_elements(By.XPATH, ".//*")
+    labels = []
+    for element in form_elements:
+        el = recurse(element)
+        if is_label(el):
+                labels.append(el)
+    return labels
 
 def dfs():
     load_dotenv()
@@ -44,32 +53,30 @@ def dfs():
     URL = 'https://boards.greenhouse.io/path/jobs/4691838004#app'
     driver.get(URL)
 
-    form = driver.find_element(By.TAG_NAME, 'form')
-    form_elements = form.find_elements(By.XPATH, ".//*")
-    labels = []
-    for element in form_elements:
-       el = recurse(element)
-       if is_label(el):
-            labels.append(el)
+    while (True):
+        labels = find_form_fields(driver)
 
-    fields = []
+        fields = []
 
-    # Append fields by label.
-    for label in labels:
-        field = {}
+        # Append fields by label.
+        for label in labels:
+            field = {}
 
-        html_for = label.get_attribute('for')
-        if html_for:
+            html_for = label.get_attribute('for')
+            if html_for:
 
-            field['label'] = label.get_attribute('innerText')
-            field['id'] = label.get_attribute('for')
+                field['label'] = label.get_attribute('innerText')
+                field['id'] = label.get_attribute('for')
 
-            # Element
-            input_field = driver.find_element(By.ID, field['id'])
-            field['tagName'] = input_field.get_attribute('tagName')
-            field['element'] = input_field
+                # Element
+                input_field = driver.find_element(By.ID, field['id'])
+                field['tagName'] = input_field.get_attribute('tagName')
+                field['element'] = input_field
 
-            fields.append(field)
+                fields.append(field)
+
+        # Handle case where there is no input. User responds to input until fields are available. Then re-call function.
+        input("Handle case & hit enter: ")
 
 
 dfs()
