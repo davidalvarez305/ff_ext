@@ -11,6 +11,7 @@ from dotenv import load_dotenv
 from selenium.webdriver.remote.webelement import WebElement
 
 from list import COMMON_QUESTIONS
+from helpers.sheets import get_values
 
 
 def has_children(element: WebElement):
@@ -140,6 +141,9 @@ def dfs():
 
     URL = 'https://accelbyte.bamboohr.com/jobs/view.php?id=285'
     driver.get(URL)
+
+    vals = get_values('1q8yO72NtdY4-rTL_rpafufPe8BBonky4X-oc0vPELng', "fields!A2:B")
+    print('vals: ', vals)
 
     while (True):
         try:

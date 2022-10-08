@@ -1,5 +1,4 @@
 from datetime import datetime
-from lib2to3.pytree import Base
 import os
 from time import sleep
 from selenium.webdriver.common.by import By
