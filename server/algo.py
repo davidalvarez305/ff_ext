@@ -10,53 +10,45 @@ from selenium.webdriver.common.keys import Keys
 from dotenv import load_dotenv
 from selenium.webdriver.remote.webelement import WebElement
 
-from list import COMMON_QUESTIONS
 from helpers.sheets import get_values
 
+def get_element(element, values):
+    attributes = ['id', 'name', 'class']
+    for attr in attributes:
+        attribute = element.get_attribute(attr)
+        for question in values:
+            try:
+                if attribute and attribute.lower() in question['question']:
+                    field = {}
 
-def has_children(element: WebElement):
-    return len(element.find_elements(By.XPATH, ".//*")) > 0
+                    field['label'] = question['question'][0]
+                    field[attr] = attribute
 
+                    field['tagName'] = element.get_attribute('tagName')
+                    field['element'] = element
+                    return field
+            except BaseException:
+                continue
 
-def child_nodes(element: WebElement):
-    return element.find_elements(By.XPATH, ".//*")
-
-
-def is_label(element: WebElement):
-    try:
-        return element.get_attribute('tagName') == 'LABEL'
-    except AttributeError:
-        pass
-
-
-def recurse(element: WebElement):
-    if has_children(element) and not is_label(element):
-        nodes = child_nodes(element)
-        for node in nodes:
-            recurse(node)
-    else:
-        return element
-
-
-def find_form_fields(driver):
+def find_form_fields(driver, values):
     # Handle iFrame
     form_elements = []
+    fields = []
 
-    tag_names = ['label', 'select', 'input', 'button', 'textarea']
+    tag_names = ['select', 'input', 'button', 'textarea']
 
     for tag in tag_names:
         form_elements += driver.find_elements(By.TAG_NAME, tag)
 
-    labels = []
     for element in form_elements:
-        el = recurse(element)
-        if is_label(el):
-            labels.append(el)
-    return labels
+        field = get_element(element, values)
+        if field:
+            fields.append(field)
 
+    return fields
 
-def traverse_dom(driver):
-    labels = find_form_fields(driver)
+def handle_fields(driver, values):
+    labels = driver.find_elements(By.TAG_NAME, 'label')
 
     fields = []
 
@@ -71,7 +63,6 @@ def traverse_dom(driver):
                 field['label'] = label.get_attribute('innerText')
                 field['id'] = label.get_attribute('for')
 
-                # Element
                 input_field = driver.find_element(By.ID, field['id'])
                 field['tagName'] = input_field.get_attribute('tagName')
                 field['element'] = input_field
@@ -81,48 +72,58 @@ def traverse_dom(driver):
             except BaseException:
                 continue
 
+    # Append Form Fields
+    form_fields = find_form_fields(driver, values)
+    fields += form_fields
+
+    print('form_fields: ', len(form_fields))
+
     for field in fields:
-        print('label: ', field['label'])
+        print('field: ', field['tagName'])
         try:
             # Handle Resume Upload
             if field['tagName'] == 'BUTTON':
                 resume_fields = [
                     field['label'],
                     field['element'].get_attribute('textContent'),
+                    field['element'].get_attribute('innerText'),
+                    field['element'].get_attribute('innerHTML'),
                     field['element'].get_attribute('id'),
                     field['element'].get_attribute('name'),
                     field['element'].get_attribute('class')
                 ]
                 if "resume" in resume_fields:
-                    field['element'].send_keys(str(os.environ.get('RESUME_PATH')))
+                        if field['element'].get_attribute('value') == "":
+                            field['element'].send_keys(str(os.environ.get('RESUME_PATH')))
                 if "cover" in resume_fields:
-                    field['element'].send_keys(str(os.environ.get('COVER_PATH')))
+                    if field['element'].get_attribute('value') == "":
+                        field['element'].send_keys(str(os.environ.get('COVER_PATH')))
 
             # Handle Select Buttons
             elif field['tagName'] == 'SELECT':
-                for question in COMMON_QUESTIONS:
-                    if question['question'].lower() in field['label'].lower():
+                for question in values:
+                    if any(substr in field['label'].lower() for substr in question['question']):
                         field['element'].click()
 
                         options = field['element'].find_elements(By.TAG_NAME, 'option')
-
                         for option in options:
                             if option.get_attribute('textContent').lower() == question['data']:
                                 option.click()
 
             # Handle Checkboxes & Radio Buttons
             elif field['tagName'] == 'INPUT' and field['element'].get_attribute('type') in ['checkbox', 'radio']:
-                for question in COMMON_QUESTIONS:
-                    if question['question'].lower() in field['label'].lower():
-                        field['element'].click()
+                for question in values:
+                    if any(substr in field['label'].lower() for substr in question['question']):
+                        if field['element'].get_attribute('value') == False:
+                            field['element'].click()
 
             # Handle Normal Inputs
             else:
-                for question in COMMON_QUESTIONS:
-                    if question['question'].lower() in field['label'].lower():
-                        field['element'].send_keys(question['data'])
-        except BaseException as err:
-            print("Error: ", err)
+                for question in values:
+                    if any(substr in field['label'].lower() for substr in question['question']):
+                        if field['element'].get_attribute('value') == "":
+                            field['element'].send_keys(question['data'])
+        except BaseException:
             continue
 
     input("Handle next step & hit enter: ")
@@ -142,12 +143,15 @@ def dfs():
     URL = 'https://accelbyte.bamboohr.com/jobs/view.php?id=285'
     driver.get(URL)
 
-    vals = get_values('1q8yO72NtdY4-rTL_rpafufPe8BBonky4X-oc0vPELng', "fields!A2:B")
-    print('vals: ', vals)
+    rows = get_values(os.environ.get('SHEETS_ID'), f"{os.environ.get('TAB_NAME')}!A2:E")
+    values = []
+
+    for row in rows:
+        values.append({ "data": row[0], "question": row[1:] })
 
     while (True):
         try:
-            traverse_dom(driver)
+            handle_fields(driver, values)
         except NoSuchElementException as err:
             print("Error: ", err)
             input("Handle case & hit enter: ")
