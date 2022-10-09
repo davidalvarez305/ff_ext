@@ -19,8 +19,6 @@ def execute(data):
 
     sleep(5)
 
-    # Handle iFrame -- Route to greenhouse
-
     if "workdayjobs" in data['url']:
         handle_workdayjobs(driver, data)
         return
@@ -36,7 +34,11 @@ def execute(data):
         # handle adp.com
 
     try:
-        if "smartrecruiters" in data['url']:
+        iframe = driver.find_elements(By.TAG_NAME, 'iframe')
+        if len(iframe) > 0:
+            handle_greenhouse(driver=driver, data=data)
+            enter_fields(driver)
+        elif "smartrecruiters" in data['url']:
             handle_smartrecruiters(driver=driver, data=data)
         elif "greenhouse" in data['url']:
             handle_greenhouse(driver=driver, data=data)
