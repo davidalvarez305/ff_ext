@@ -67,10 +67,7 @@ def handle_fields(driver, values):
     form_fields = find_form_fields(driver, values)
     fields += form_fields
 
-    print('form_fields: ', len(form_fields))
-
     for field in fields:
-        print('field: ', field['tagName'])
         try:
             # Handle Resume Upload
             if field['tagName'] == 'BUTTON':

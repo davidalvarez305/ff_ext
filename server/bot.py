@@ -38,9 +38,10 @@ def execute(data):
     try:
         if "smartrecruiters" in data['url']:
             handle_smartrecruiters(driver=driver, data=data)
-        if "greenhouse" in data['url']:
+        elif "greenhouse" in data['url']:
             handle_greenhouse(driver=driver, data=data)
-        if "lever" in data['url']:
+            enter_fields(driver)
+        elif "lever" in data['url']:
             handle_lever(driver=driver, data=data)
         elif "underdog.io" in data['url']:
             handle_underdog_fields(driver=driver, data=data)
