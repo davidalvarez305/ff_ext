@@ -26,7 +26,7 @@ def handle_lever_fields(field_name, element, data):
         handle_select_child_options(element, data['user']['gender'])
 
 
-def handle_lever(driver, data):
+def handle_lever(driver, data, values):
     elements = driver.find_elements(By.CLASS_NAME, "application-question")
 
     elements += driver.find_elements(By.CLASS_NAME, "custom-question")

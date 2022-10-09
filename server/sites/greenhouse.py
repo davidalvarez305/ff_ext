@@ -77,7 +77,7 @@ def handle_hidden_field(field_name, element, driver, data):
             if field_match(btn.get_attribute('textContent'), data=data['user']['immigrationSponsorship']):
                 btn.click()
 
-def handle_greenhouse(driver, data):
+def handle_greenhouse(driver, data, values):
 
     # Get Fields
     dropdowns = driver.find_elements(By.CLASS_NAME, "field")

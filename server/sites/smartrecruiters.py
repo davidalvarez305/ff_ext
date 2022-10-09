@@ -10,7 +10,7 @@ def upload_smartrecruiters_resume(driver):
     resume_upload.send_keys(os.environ.get('RESUME_PATH'))
     sleep(5)
 
-def handle_smartrecruiters(driver, data):
+def handle_smartrecruiters(driver, data, values):
     sleep(1)
 
     # Delete Resume Fields

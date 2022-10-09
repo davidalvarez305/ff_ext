@@ -4,6 +4,7 @@ from selenium import webdriver
 from selenium.webdriver.firefox.options import Options
 from selenium.webdriver.common.by import By
 from handle_fields import enter_fields
+from server.helpers.sheets import get_values
 from sites.bamboo import handle_bamboo
 from sites.underdog import handle_underdog_fields
 from sites.lever import handle_lever
@@ -13,6 +14,12 @@ from sites.workdayjobs import handle_workdayjobs
 from utils import click_preapplication_button
 
 def execute(data):
+    rows = get_values(os.environ.get('SHEETS_ID'), f"{os.environ.get('TAB_NAME')}!A2:E")
+    values = []
+
+    for row in rows:
+        values.append({ "data": row[0], "question": row[1:] })
+
     options = Options()
     user_agent = str(os.environ.get('USER_AGENT'))
     # options.add_argument("--headless")
@@ -21,7 +28,6 @@ def execute(data):
     driver = webdriver.Firefox()
 
     driver.get(data['url'])
-    sleep(5)
 
     if "workdayjobs" in data['url']:
         handle_workdayjobs(driver, data)
@@ -39,14 +45,14 @@ def execute(data):
 
     try:
         if "greenhouse" in data['url']:
-            handle_greenhouse(driver=driver, data=data)
+            handle_greenhouse(driver=driver, data=data, values=values)
         elif "smartrecruiters" in data['url']:
-            handle_smartrecruiters(driver=driver, data=data)
+            handle_smartrecruiters(driver=driver, data=data, values=values)
         elif "lever" in data['url']:
-            handle_lever(driver=driver, data=data)
+            handle_lever(driver=driver, data=data, values=values)
         elif "underdog.io" in data['url']:
-            handle_underdog_fields(driver=driver, data=data)
+            handle_underdog_fields(driver=driver, data=data, values=values)
         else:
-            enter_fields(driver)
+            enter_fields(driver, values)
     except BaseException:
         pass

@@ -101,14 +101,7 @@ def handle_fields(driver, values):
     input("Handle next step & hit enter: ")
 
 
-def enter_fields(driver):
-
-    rows = get_values(os.environ.get('SHEETS_ID'), f"{os.environ.get('TAB_NAME')}!A2:E")
-    values = []
-
-    for row in rows:
-        values.append({ "data": row[0], "question": row[1:] })
-
+def enter_fields(driver, values):
     while (True):
         try:
             handle_fields(driver, values)

@@ -68,7 +68,7 @@ def handle_underdog(options, data, driver):
             if "github" in field_name.lower() or "portfolio" in field_name.lower():
                 element.send_keys(data['user']['portfolio'])
 
-def handle_underdog_fields(driver, data):
+def handle_underdog_fields(driver, data, values):
     dropdowns = driver.find_elements(By.CLASS_NAME, "div-block-37")
     for element in dropdowns:
         try:
