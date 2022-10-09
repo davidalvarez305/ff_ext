@@ -4,8 +4,11 @@ from selenium import webdriver
 from selenium.webdriver.firefox.options import Options
 from selenium.webdriver.common.by import By
 from handle_fields import enter_fields
-from wd import handle_workdayjobs
-from utils import click_preapplication_button, handle_bamboo, handle_greenhouse, handle_lever, handle_smartrecruiters, handle_underdog_fields, upload_smartrecruiters_resume
+from sites.lever import handle_lever
+from sites.smartrecruiters import handle_smartrecruiters, upload_smartrecruiters_resume
+from sites.greenhouse import handle_greenhouse
+from sites.workdayjobs import handle_workdayjobs
+from utils import click_preapplication_button, handle_bamboo, handle_underdog_fields
 
 def execute(data):
     options = Options()
