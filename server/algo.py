@@ -1,14 +1,6 @@
 import os
-from time import sleep
-from selenium import webdriver
 from selenium.webdriver.common.by import By
-from selenium.webdriver.chrome.options import Options
 from selenium.common.exceptions import NoSuchElementException
-from selenium.webdriver.chrome.service import Service
-from webdriver_manager.chrome import ChromeDriverManager
-from selenium.webdriver.common.keys import Keys
-from dotenv import load_dotenv
-from selenium.webdriver.remote.webelement import WebElement
 
 from helpers.sheets import get_values
 
@@ -31,7 +23,6 @@ def get_element(element, values):
                 continue
 
 def find_form_fields(driver, values):
-    # Handle iFrame
     form_elements = []
     fields = []
 
@@ -129,19 +120,7 @@ def handle_fields(driver, values):
     input("Handle next step & hit enter: ")
 
 
-def dfs():
-    load_dotenv()
-    options = Options()
-    user_agent = str(os.environ.get('USER_AGENT'))
-    # options.add_argument("--headless")
-    options.add_experimental_option("detach", True)
-    options.add_argument(f'user-agent={user_agent}')
-
-    driver = webdriver.Chrome(service=Service(
-        ChromeDriverManager().install()), options=options)
-
-    URL = 'https://accelbyte.bamboohr.com/jobs/view.php?id=285'
-    driver.get(URL)
+def enter_fields(driver):
 
     rows = get_values(os.environ.get('SHEETS_ID'), f"{os.environ.get('TAB_NAME')}!A2:E")
     values = []
@@ -152,9 +131,5 @@ def dfs():
     while (True):
         try:
             handle_fields(driver, values)
-        except NoSuchElementException as err:
-            print("Error: ", err)
+        except NoSuchElementException:
             input("Handle case & hit enter: ")
-
-
-dfs()

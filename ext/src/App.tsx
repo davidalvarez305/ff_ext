@@ -10,10 +10,26 @@ export const App = () => {
   const [user, setUser] = useState<User>(emptyUser);
 
   function handleScript() {
-    browser.tabs.executeScript({
-      file: "script.js",
-      allFrames: true,
-      matchAboutBlank: true,
+    browser.storage.local.get("user").then((data: { user?: User }) => {
+      if (data.user) {
+        fetch("http://localhost:5000/", {
+          method: "POST",
+          body: JSON.stringify({
+            data: {
+              url: window.location.href,
+              user: data.user,
+            },
+          }),
+        })
+          .then(async (data) => {
+            const response = await data.json();
+            alert(response.data);
+          })
+          .catch((err) => {
+            console.log(err);
+            alert(err);
+          });
+      }
     });
   }
 
