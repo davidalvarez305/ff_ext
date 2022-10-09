@@ -22,6 +22,8 @@ def handle_lever_fields(field_name, element, data):
         handle_select_child_options(element, "linkedin")
     if "State" in field_name:
         handle_select_child_options(element, data['user']['state'])
+    if "Gender" in field_name:
+        handle_select_child_options(element, data['user']['gender'])
 
 
 def handle_lever(driver, data):
@@ -33,10 +35,17 @@ def handle_lever(driver, data):
 
     elements += driver.find_elements(By.CLASS_NAME, "application-additional")
 
-    for element in elements:
-        try:
-            field_name =  element.find_element(By.XPATH, "./label").get_attribute('innerText')
-            handle_lever_fields(field_name, element, data)
+    while (True):
+        for element in elements:
+            try:
+                field_name =  element.find_element(By.XPATH, "./label").get_attribute('innerText')
 
-        except BaseException:
-            continue
+                if not "Resume" in field_name:
+                    element.click()
+
+                handle_lever_fields(field_name, element, data)
+
+            except BaseException:
+                continue
+
+        input("Handle & press enter: ")

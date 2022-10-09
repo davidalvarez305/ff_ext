@@ -4,11 +4,13 @@ from selenium import webdriver
 from selenium.webdriver.firefox.options import Options
 from selenium.webdriver.common.by import By
 from handle_fields import enter_fields
+from sites.bamboo import handle_bamboo
+from sites.underdog import handle_underdog_fields
 from sites.lever import handle_lever
 from sites.smartrecruiters import handle_smartrecruiters, upload_smartrecruiters_resume
 from sites.greenhouse import handle_greenhouse
 from sites.workdayjobs import handle_workdayjobs
-from utils import click_preapplication_button, handle_bamboo, handle_underdog_fields
+from utils import click_preapplication_button
 
 def execute(data):
     options = Options()
@@ -19,7 +21,6 @@ def execute(data):
     driver = webdriver.Firefox()
 
     driver.get(data['url'])
-
     sleep(5)
 
     if "workdayjobs" in data['url']:
@@ -37,8 +38,7 @@ def execute(data):
         # handle adp.com
 
     try:
-        iframe = driver.find_elements(By.TAG_NAME, 'iframe')
-        if len(iframe) > 0 or "greenhouse" in data['url']:
+        if "greenhouse" in data['url']:
             handle_greenhouse(driver=driver, data=data)
         elif "smartrecruiters" in data['url']:
             handle_smartrecruiters(driver=driver, data=data)
