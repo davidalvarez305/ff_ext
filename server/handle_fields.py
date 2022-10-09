@@ -1,8 +1,10 @@
 import os
+from time import sleep
 from selenium.webdriver.common.by import By
 from selenium.common.exceptions import NoSuchElementException
 
 from helpers.sheets import get_values
+from utils import find_fields_by_label
 
 def get_element(element, values):
     attributes = ['id', 'name', 'class']
@@ -39,29 +41,9 @@ def find_form_fields(driver, values):
     return fields
 
 def handle_fields(driver, values):
-    labels = driver.find_elements(By.TAG_NAME, 'label')
 
-    fields = []
-
-    # Append fields by label.
-    for label in labels:
-        field = {}
-
-        html_for = label.get_attribute('for')
-        if html_for:
-            try:
-
-                field['label'] = label.get_attribute('innerText')
-                field['id'] = label.get_attribute('for')
-
-                input_field = driver.find_element(By.ID, field['id'])
-                field['tagName'] = input_field.get_attribute('tagName')
-                field['element'] = input_field
-
-                fields.append(field)
-
-            except BaseException:
-                continue
+    # Find Fields by Form Label
+    fields = find_fields_by_label(driver)
 
     # Append Form Fields
     form_fields = find_form_fields(driver, values)
@@ -91,7 +73,9 @@ def handle_fields(driver, values):
             elif field['tagName'] == 'SELECT':
                 for question in values:
                     if any(substr in field['label'].lower() for substr in question['question']):
-                        field['element'].click()
+                        if field['element'].get_attribute('value') == "":
+                            field['element'].click()
+                            sleep(1)
 
                         options = field['element'].find_elements(By.TAG_NAME, 'option')
                         for option in options:

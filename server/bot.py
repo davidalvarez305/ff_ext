@@ -3,7 +3,7 @@ from time import sleep
 from selenium import webdriver
 from selenium.webdriver.firefox.options import Options
 from selenium.webdriver.common.by import By
-from algo import enter_fields
+from handle_fields import enter_fields
 from wd import handle_workdayjobs
 from utils import click_preapplication_button, handle_bamboo, handle_greenhouse, handle_lever, handle_smartrecruiters, handle_underdog_fields, upload_smartrecruiters_resume
 
@@ -35,14 +35,10 @@ def execute(data):
 
     try:
         iframe = driver.find_elements(By.TAG_NAME, 'iframe')
-        if len(iframe) > 0:
+        if len(iframe) > 0 or "greenhouse" in data['url']:
             handle_greenhouse(driver=driver, data=data)
-            enter_fields(driver)
         elif "smartrecruiters" in data['url']:
             handle_smartrecruiters(driver=driver, data=data)
-        elif "greenhouse" in data['url']:
-            handle_greenhouse(driver=driver, data=data)
-            enter_fields(driver)
         elif "lever" in data['url']:
             handle_lever(driver=driver, data=data)
         elif "underdog.io" in data['url']:

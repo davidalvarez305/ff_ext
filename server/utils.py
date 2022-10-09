@@ -5,6 +5,33 @@ from selenium.webdriver.common.by import By
 from list import COMMON_QUESTIONS
 from selenium.webdriver.common.keys import Keys
 
+def find_fields_by_label(driver):
+    labels = driver.find_elements(By.TAG_NAME, 'label')
+
+    fields = []
+
+    # Append fields by label.
+    for label in labels:
+        field = {}
+
+        html_for = label.get_attribute('for')
+        if html_for:
+            try:
+
+                field['label'] = label.get_attribute('innerText')
+                field['id'] = label.get_attribute('for')
+
+                input_field = driver.find_element(By.ID, field['id'])
+                field['tagName'] = input_field.get_attribute('tagName')
+                field['element'] = input_field
+
+                fields.append(field)
+
+            except BaseException:
+                continue
+    
+    return fields
+
 def click_preapplication_button(driver):
     button = driver.find_element(By.XPATH, "/html/body/div[2]/div[3]/div/div/button")
     button.click()
@@ -164,6 +191,9 @@ def handle_hidden_field(field_name, element, driver, data):
     if "LinkedIn" in field_name:
         handle_input_field(element, data['user']['linkedin'], x_path)
         sleep(1.5)
+    if "Github" in field_name:
+        handle_select_child_options(element, data['user']['portfolio'])
+        sleep(1.5)
     if "Wesbite" in field_name:
         handle_input_field(element, data['user']['website'], x_path)
         sleep(1.5)
@@ -180,19 +210,38 @@ def handle_hidden_field(field_name, element, driver, data):
                 btn.click()
 
 def handle_greenhouse(driver, data):
+
+    # Get Fields
     dropdowns = driver.find_elements(By.CLASS_NAME, "field")
+    input_fields = find_fields_by_label(driver=driver)
+
+    for input in input_fields:
+        if "First" in input['label']:
+            if input['element'].get_attribute('value') == "":
+                input['element'].send_keys(data['user']['firstName'])
+        if "Last" in input['label']:
+            if input['element'].get_attribute('value') == "":
+                input['element'].send_keys(data['user']['lastName'])
+        if "Email" in input['label']:
+            if input['element'].get_attribute('value') == "":
+                input['element'].send_keys(data['user']['email'])
+        if "Phone" in input['label']:
+            if input['element'].get_attribute('value') == "":
+                input['element'].send_keys(data['user']['phoneNumber'])
+    
     for element in dropdowns:
         try:
             element.click()
             field_name = element.find_element(By.XPATH, "./label").get_attribute('innerText')
+
             if "School" or "Degree" or "Discipline" in field_name:
                 handle_greenhouse_autocomplete(driver, data, field_name)
                 sleep(1)
-
+            
             handle_hidden_field(field_name, element, driver, data)
 
         except BaseException as err:
-            # print(err)
+            print(err)
             continue
 
 def handle_lever_fields(field_name, element, data):
