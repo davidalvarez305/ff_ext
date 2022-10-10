@@ -1,10 +1,9 @@
 import os
-from time import sleep
 from selenium import webdriver
 from selenium.webdriver.firefox.options import Options
 from selenium.webdriver.common.by import By
 from handle_fields import enter_fields
-from server.helpers.sheets import get_values
+from helpers.sheets import get_values
 from sites.bamboo import handle_bamboo
 from sites.underdog import handle_underdog_fields
 from sites.lever import handle_lever

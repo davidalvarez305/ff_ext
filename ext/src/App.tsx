@@ -9,7 +9,7 @@ export const App = () => {
   const [showSetup, setShowSetup] = useState(false);
   const [user, setUser] = useState<User>(emptyUser);
 
-  function handleScript() {
+  function handleRequest() {
     browser.storage.local.get("user").then((data: { user?: User }) => {
       if (data.user) {
         fetch("http://localhost:5000/", {
@@ -27,6 +27,29 @@ export const App = () => {
           })
           .catch((err) => {
             console.log(err);
+            alert(err);
+          });
+      }
+    });
+  }
+
+  function handleLinkedIn() {
+    browser.storage.local.get("user").then((data: { user?: User }) => {
+      if (data.user) {
+        fetch("http://localhost:5000/", {
+          method: "POST",
+          body: JSON.stringify({
+            data: {
+              url: "https://www.linkedin.com/",
+              user: data.user,
+            },
+          }),
+        })
+          .then(async (data) => {
+            const response = await data.json();
+            alert(response.data);
+          })
+          .catch((err) => {
             alert(err);
           });
       }
@@ -80,9 +103,17 @@ export const App = () => {
         <TopButtons
           rightButton={"Setup"}
           leftButton={"Request"}
-          leftButtonClick={() => handleScript()}
+          leftButtonClick={() => handleRequest()}
           rightButtonClick={() => setShowSetup((prev) => !prev)}
         />
+        <Box sx={{ my: 20 }}>
+          <TopButtons
+            rightButton={"Setup"}
+            leftButton={"LinkedIn"}
+            leftButtonClick={() => handleLinkedIn()}
+            rightButtonClick={() => setShowSetup((prev) => !prev)}
+          />
+        </Box>
       </Box>
     </Layout>
   );

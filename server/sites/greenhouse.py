@@ -28,86 +28,59 @@ def handle_greenhouse_autocomplete(driver, data, field_name):
         except BaseException:
             continue
 
-def handle_hidden_field(field_name, element, driver, data):
+def handle_hidden_field(field_name, element, driver, data, values):
+    select_fields = element.find_elements(By.TAG_NAME, 'select')
+    print('field_name: ',field_name)
 
-    # Handle Hidden Option Fields
-    if "security clearance" in field_name:
-        handle_select_child_options(element, data['user']['securityClearance'])
-    if "willing to relocate" in field_name:
-        handle_select_child_options(element, "No")
-    if "race" in field_name:
-        handle_select_child_options(element, data['user']['race'])
-    if "authorized" in field_name or "legal right to work" in field_name:
-        handle_select_child_options(element, data['user']['workAuthorization'])
-    if "sponsorship" in field_name:
-        handle_select_child_options(element, data['user']['immigrationSponsorship'])
-    if "Disability" in field_name:
-        handle_select_child_options(element, data['user']['disabilityStatus'])
-    if "Veteran" in field_name:
-        handle_select_child_options(element, data['user']['veteranStatus'].lower())
-    if "Hispanic/Latino" in field_name:
-        handle_select_child_options(element, data['user']['isHispanic'])
-    if "Gender" in field_name:
-        handle_select_child_options(element, data['user']['gender'])
-    if "hear about this job" in field_name:
-        handle_select_child_options(element, data['user']['applicationReferral'])
-    if "Do you have any relatives currently employed by" in field_name:
-        handle_select_child_options(element, "No")
-
-    # Handle Hidden Input Fields
-    x_path = './label/input[@type="text"]'
-    if "LinkedIn" in field_name:
-        handle_input_field(element, data['user']['linkedin'], x_path)
-        sleep(1.5)
-    if "Github" in field_name:
-        handle_select_child_options(element, data['user']['portfolio'])
-        sleep(1.5)
-    if "Wesbite" in field_name:
-        handle_input_field(element, data['user']['website'], x_path)
-        sleep(1.5)
-    if "country of residence" in field_name:
-        handle_input_field(element, data['user']['country'], x_path)
-    if "hear about this job" in field_name:
-        handle_input_field(element, "LinkedIn", x_path)
-    if "salary" in field_name:
-        handle_input_field(element, data['user']['salary'], x_path)
-    if "require" in field_name and "immigration" in field_name:
-        btns = driver.find_elements(By.CLASS_NAME, "application-answer-alternative")
-        for btn in btns:
-            if field_match(btn.get_attribute('textContent'), data=data['user']['immigrationSponsorship']):
-                btn.click()
+    for value in values:
+        if "Were you referred by" in field_name:
+            handle_select_child_options(element, "No")
+        if "require" in field_name and "immigration" in field_name:
+            btns = driver.find_elements(By.CLASS_NAME, "application-answer-alternative")
+            for btn in btns:
+                if field_match(btn.get_attribute('textContent'), data=data['user']['immigrationSponsorship']):
+                    btn.click()
+        if any(substr in field_name.lower() for substr in value['question']):
+            if len(select_fields) > 0:
+                handle_select_child_options(element, data['user'][f"{value['data']}"])
+            else:
+                x_path = './label/input[@type="text"]'
+                handle_input_field(element, data['user'][f"{value['data']}"], x_path)
 
 def handle_greenhouse(driver, data, values):
 
     # Get Fields
     dropdowns = driver.find_elements(By.CLASS_NAME, "field")
+
     input_fields = find_fields_by_label(driver=driver)
 
-    for input in input_fields:
-        if "First" in input['label']:
-            if input['element'].get_attribute('value') == "":
-                input['element'].send_keys(data['user']['firstName'])
-        if "Last" in input['label']:
-            if input['element'].get_attribute('value') == "":
-                input['element'].send_keys(data['user']['lastName'])
-        if "Email" in input['label']:
-            if input['element'].get_attribute('value') == "":
-                input['element'].send_keys(data['user']['email'])
-        if "Phone" in input['label']:
-            if input['element'].get_attribute('value') == "":
-                input['element'].send_keys(data['user']['phoneNumber'])
+    for input_field in input_fields:
+        if "First" in input_field['label']:
+            if input_field['element'].get_attribute('value') == "":
+                input_field['element'].send_keys(data['user']['firstName'])
+        if "Last" in input_field['label']:
+            if input_field['element'].get_attribute('value') == "":
+                input_field['element'].send_keys(data['user']['lastName'])
+        if "Email" in input_field['label']:
+            if input_field['element'].get_attribute('value') == "":
+                input_field['element'].send_keys(data['user']['email'])
+        if "Phone" in input_field['label']:
+            if input_field['element'].get_attribute('value') == "":
+                input_field['element'].send_keys(data['user']['phoneNumber'])
     
-    for element in dropdowns:
-        try:
-            element.click()
-            field_name = element.find_element(By.XPATH, "./label").get_attribute('innerText')
+    while (True):
+        for element in dropdowns:
+            try:
+                element.click()
+                field_name = element.find_element(By.XPATH, "./label").get_attribute('innerText')
 
-            if "School" or "Degree" or "Discipline" in field_name:
-                handle_greenhouse_autocomplete(driver, data, field_name)
-                sleep(1)
-            
-            handle_hidden_field(field_name, element, driver, data)
+                if "School" or "Degree" or "Discipline" in field_name:
+                    handle_greenhouse_autocomplete(driver, data, field_name)
+                    sleep(1)
+                
+                handle_hidden_field(field_name, element, driver, data, values)
 
-        except BaseException as err:
-            print(err)
-            continue
+            except BaseException:
+                continue
+
+        input("Handle & press enter: ")
