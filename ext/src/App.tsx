@@ -108,10 +108,8 @@ export const App = () => {
         />
         <Box sx={{ my: 20 }}>
           <TopButtons
-            rightButton={"Setup"}
             leftButton={"LinkedIn"}
             leftButtonClick={() => handleLinkedIn()}
-            rightButtonClick={() => setShowSetup((prev) => !prev)}
           />
         </Box>
       </Box>

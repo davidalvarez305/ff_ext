@@ -7,7 +7,7 @@ from selenium.webdriver.firefox.options import Options
 from selenium.webdriver.common.by import By
 from selenium.webdriver.common.keys import Keys
 
-from server.site_router import site_router
+from site_router import site_router
 
 def login(driver):
     # Get Input Fields
