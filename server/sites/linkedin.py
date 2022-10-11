@@ -7,10 +7,12 @@ from selenium.webdriver.firefox.options import Options
 from selenium.webdriver.common.by import By
 from selenium.webdriver.common.keys import Keys
 
+from server.site_router import site_router
+
 def login(driver):
     # Get Input Fields
-    username_input = driver.find_element(By.ID, "username")
-    password_input = driver.find_element(By.ID, "password")
+    username_input = driver.find_element(By.ID, "session_key")
+    password_input = driver.find_element(By.ID, "session_password")
 
     # Enter Input
     simulate_typing(username_input, os.environ.get('EMAIL'))
@@ -46,7 +48,7 @@ def go_to_jobs_search(driver):
     except BaseException:
         input("Press enter after looking up jobs: ")
 
-def handle_job(driver):
+def handle_job(driver, data, values):
     try:
         job_details = driver.find_element(By.CLASS_NAME, 'jobs-details')
         buttons = job_details.find_elements(By.TAG_NAME, 'button')
@@ -57,29 +59,18 @@ def handle_job(driver):
         
         sleep(4)
 
-        print('current url: ', driver.current_url)
+        data['url'] = driver.current_url
+
+        site_router(driver=driver, data=data, values=values)
 
         driver.close()
     except BaseException:
         input("Press enter after handling job: ")
 
-def loop_linkedin():
-    load_dotenv()
-
-    options = Options()
-    # options.add_argument("--headless")
-    options.add_argument(f"user-agent={os.environ.get('USER_AGENT')}")
-    options.add_argument("--disable-blink-features")
-    options.add_argument("--disable-blink-features=AutomationControlled")
-    options.add_argument("disable-popup-blocking")
-    options.add_argument("disable-notifications")
-
-    driver = webdriver.Firefox() 
-
-    driver.get("https://www.linkedin.com/login?trk=guest_homepage-basic_nav-header-signin")
+def handle_linkedin(driver, data, values):
 
     # Attempt to Login
-    login(driver)
+    # login(driver)
     input("Press enter after logging in: ")
 
     # Access Job Search
@@ -90,7 +81,4 @@ def loop_linkedin():
     
     for job in jobs:
         job.click()
-        handle_job(driver)
-        
-
-loop_linkedin()
+        handle_job(driver=driver, data=data, values=values)

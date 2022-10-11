@@ -1,9 +1,5 @@
-import os
-from selenium import webdriver
-from selenium.webdriver.firefox.options import Options
 from selenium.webdriver.common.by import By
 from handle_fields import enter_fields
-from helpers.sheets import get_values
 from sites.bamboo import handle_bamboo
 from sites.underdog import handle_underdog_fields
 from sites.lever import handle_lever
@@ -12,22 +8,7 @@ from sites.greenhouse import handle_greenhouse
 from sites.workdayjobs import handle_workdayjobs
 from utils import click_preapplication_button
 
-def execute(data):
-    rows = get_values(os.environ.get('SHEETS_ID'), f"{os.environ.get('TAB_NAME')}!A2:E")
-    values = []
-
-    for row in rows:
-        values.append({ "data": row[0], "question": row[1:] })
-
-    options = Options()
-    user_agent = str(os.environ.get('USER_AGENT'))
-    # options.add_argument("--headless")
-    options.add_argument(f'user-agent={user_agent}')
-
-    driver = webdriver.Firefox()
-
-    driver.get(data['url'])
-
+def site_router(driver, data, values):
     if "workdayjobs" in data['url']:
         handle_workdayjobs(driver, data)
         return
@@ -38,9 +19,6 @@ def execute(data):
 
     if "smartrecruiters" in data['url']:
         upload_smartrecruiters_resume(driver=driver)
-
-        # handle ashbyhq.com
-        # handle adp.com
 
     try:
         if "greenhouse" in data['url']:

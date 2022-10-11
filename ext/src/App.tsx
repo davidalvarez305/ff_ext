@@ -40,7 +40,7 @@ export const App = () => {
           method: "POST",
           body: JSON.stringify({
             data: {
-              url: "https://www.linkedin.com/",
+              url: "https://www.linkedin.com/login?trk=guest_homepage-basic_nav-header-signin",
               user: data.user,
             },
           }),
