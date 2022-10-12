@@ -67,7 +67,9 @@ def handle_greenhouse(driver, data, values):
             if input_field['element'].get_attribute('value') == "":
                 input_field['element'].send_keys(data['user']['phoneNumber'])
     
-    while (True):
+    to_continue = True
+
+    while (to_continue):
         for element in dropdowns:
             try:
                 element.click()
@@ -81,5 +83,6 @@ def handle_greenhouse(driver, data, values):
 
             except BaseException:
                 continue
-
-        input("Handle & press enter: ")
+        
+        val = input("Write one key if values have been correctly executed: ")
+        to_continue = val == ""

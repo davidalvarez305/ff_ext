@@ -1,9 +1,6 @@
 import os
 from time import sleep
 from selenium.webdriver.common.by import By
-from selenium.common.exceptions import NoSuchElementException
-
-from helpers.sheets import get_values
 from utils import find_fields_by_label
 
 def get_element(element, values):
