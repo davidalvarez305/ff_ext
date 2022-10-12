@@ -30,7 +30,6 @@ def handle_greenhouse_autocomplete(driver, data, field_name):
 
 def handle_hidden_field(field_name, element, driver, data, values):
     select_fields = element.find_elements(By.TAG_NAME, 'select')
-    print('field_name: ',field_name)
 
     for value in values:
         if "Were you referred by" in field_name:

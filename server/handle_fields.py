@@ -40,7 +40,7 @@ def find_form_fields(driver, values):
 
     return fields
 
-def handle_fields(driver, values):
+def handle_fields(driver, values, data):
 
     # Find Fields by Form Label
     fields = find_fields_by_label(driver)
@@ -50,7 +50,6 @@ def handle_fields(driver, values):
     fields += form_fields
 
     for field in fields:
-        try:
             # Handle Resume Upload
             if field['tagName'] == 'BUTTON':
                 resume_fields = [
@@ -73,20 +72,20 @@ def handle_fields(driver, values):
             elif field['tagName'] == 'SELECT':
                 for question in values:
                     if any(substr in field['label'].lower() for substr in question['question']):
-                        if field['element'].get_attribute('value') == "":
+                        if data['user'][f"{question['data']}"].lower() in field['element'].get_attribute('value').lower():
                             field['element'].click()
                             sleep(1)
 
                         options = field['element'].find_elements(By.TAG_NAME, 'option')
                         for option in options:
-                            if option.get_attribute('textContent').lower() == question['data']:
+                            if data['user'][f"{question['data']}"].lower() in option.get_attribute('textContent').lower():
                                 option.click()
 
             # Handle Checkboxes & Radio Buttons
             elif field['tagName'] == 'INPUT' and field['element'].get_attribute('type') in ['checkbox', 'radio']:
                 for question in values:
                     if any(substr in field['label'].lower() for substr in question['question']):
-                        if field['element'].get_attribute('value') == False:
+                        if data['user'][f"{question['data']}"].lower() in field['element'].get_attribute('value').lower():
                             field['element'].click()
 
             # Handle Normal Inputs
@@ -94,16 +93,19 @@ def handle_fields(driver, values):
                 for question in values:
                     if any(substr in field['label'].lower() for substr in question['question']):
                         if field['element'].get_attribute('value') == "":
-                            field['element'].send_keys(question['data'])
-        except BaseException:
-            continue
+                            field['element'].send_keys(data['user'][f"{question['data']}"])
 
-    input("Handle next step & hit enter: ")
+    val = input("Write one key if values have been correctly executed: ")
+    return val == ""
 
 
-def enter_fields(driver, values):
-    while (True):
+def enter_fields(driver, values, data):
+    to_continue = True
+    while (to_continue):
         try:
-            handle_fields(driver, values)
-        except NoSuchElementException:
+            print("Executing enter fields...")
+            to_continue = handle_fields(driver, values, data)
+        except BaseException as err:
+            print(err)
             input("Handle case & hit enter: ")
+            continue

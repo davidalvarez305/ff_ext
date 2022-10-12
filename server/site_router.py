@@ -30,6 +30,6 @@ def site_router(driver, data, values):
         elif "underdog.io" in data['url']:
             handle_underdog_fields(driver=driver, data=data, values=values)
         else:
-            enter_fields(driver, values)
-    except BaseException:
-        pass
+            enter_fields(driver, values, data)
+    except BaseException as err:
+        print("Error in site router: ", err)
