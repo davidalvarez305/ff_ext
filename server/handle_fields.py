@@ -103,6 +103,7 @@ def enter_fields(driver, values, data):
             print("Executing enter fields...")
             to_continue = handle_fields(driver, values, data)
         except BaseException as err:
-            print(err)
-            input("Handle case & hit enter: ")
+            print("Error handling field: ", err)
+            val = input("Handle case & hit enter: ")
+            to_continue = val == ""
             continue

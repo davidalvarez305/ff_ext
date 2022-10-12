@@ -1,3 +1,4 @@
+from lib2to3.pytree import Base
 import os
 from random import uniform
 from time import sleep
@@ -49,22 +50,26 @@ def go_to_jobs_search(driver):
         input("Press enter after looking up jobs: ")
 
 def handle_job(driver, data, values):
-    job_details = driver.find_element(By.CLASS_NAME, 'jobs-details')
-    buttons = job_details.find_elements(By.TAG_NAME, 'button')
-    
-    for button in buttons:
-        if "Apply" in button.get_attribute('innerText'):
-            button.click()
-    
-    sleep(5)
+    try:
+        job_details = driver.find_element(By.CLASS_NAME, 'jobs-details')
+        buttons = job_details.find_elements(By.TAG_NAME, 'button')
+        
+        for button in buttons:
+            if "Apply" in button.get_attribute('innerText'):
+                button.click()
+        
+        sleep(5)
 
-    # Switch Tab & Fill Fields
-    driver.switch_to.window(driver.window_handles[1])
-    data['url'] = driver.current_url
+        # Switch Tab & Fill Fields
+        driver.switch_to.window(driver.window_handles[1])
+        data['url'] = driver.current_url
 
-    site_router(driver=driver, data=data, values=values)
+        site_router(driver=driver, data=data, values=values)
 
-    driver.close()
+        driver.close()
+    except BaseException as err:
+        print("Error at Handle Job: ", err)
+
 
 def handle_linkedin(driver, data, values):
 
@@ -83,5 +88,6 @@ def handle_linkedin(driver, data, values):
             job.click()
             handle_job(driver=driver, data=data, values=values)
         except BaseException as err:
-            print(err)
+            print("Error handling job: ", err)
+            input("Press enter to move on to next job: ")
             continue
