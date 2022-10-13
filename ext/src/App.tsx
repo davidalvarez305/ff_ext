@@ -1,7 +1,9 @@
 import { Box, Button } from "@chakra-ui/react";
+import { Form, Formik } from "formik";
 import { useEffect, useState } from "react";
 import { Layout } from "./Layout";
 import { Setup } from "./Setup";
+import { SimpleInputField } from "./SimpleInputField";
 import { TopButtons } from "./TopButtons";
 import { emptyUser, User } from "./utils";
 
@@ -33,7 +35,7 @@ export const App = () => {
     });
   }
 
-  function handleLinkedIn() {
+  function handleLinkedIn(values: { keywords: "" }) {
     browser.storage.local.get("user").then((data: { user?: User }) => {
       if (data.user) {
         fetch("http://localhost:5000/", {
@@ -42,6 +44,7 @@ export const App = () => {
             data: {
               url: "https://www.linkedin.com/login?trk=guest_homepage-basic_nav-header-signin",
               user: data.user,
+              keywords: values.keywords,
             },
           }),
         })
@@ -108,12 +111,31 @@ export const App = () => {
           rightButtonClick={() => setShowSetup((prev) => !prev)}
         />
         <Box sx={{ my: 20 }}>
-          <Button
-            variant={"outline"}
-            colorScheme={"blue"}
-            width={75}
-            onClick={() => handleLinkedIn()}
-          />
+          <Formik initialValues={{ keywords: "" }} onSubmit={handleLinkedIn}>
+            <Form>
+              <Box
+                sx={{
+                  display: "flex",
+                  justifyContent: "center",
+                  alignItems: "center",
+                  flexDirection: "column",
+                  gap: 5,
+                }}
+              >
+                <SimpleInputField
+                  name={"keywords"}
+                  label={"Linkedin Job Search"}
+                />
+                ;
+                <Button
+                  variant={"outline"}
+                  colorScheme={"blue"}
+                  type={"submit"}
+                  width={75}
+                />
+              </Box>
+            </Form>
+          </Formik>
         </Box>
       </Box>
     </Layout>
