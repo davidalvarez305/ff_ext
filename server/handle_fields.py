@@ -104,6 +104,6 @@ def enter_fields(driver, values, data):
             to_continue = handle_fields(driver, values, data)
         except BaseException as err:
             print("Error handling field: ", err)
-            val = input("Handle case & hit enter: ")
+            val = input("Press any letter if you want to move on to the next page: ")
             to_continue = val == ""
             continue

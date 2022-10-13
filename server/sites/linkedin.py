@@ -10,6 +10,7 @@ from selenium.webdriver.common.keys import Keys
 
 from site_router import site_router
 
+
 def login(driver):
     # Get Input Fields
     username_input = driver.find_element(By.ID, "session_key")
@@ -23,14 +24,17 @@ def login(driver):
     sleep(1)
     password_input.send_keys(Keys.RETURN)
 
+
 def simulate_typing(element, txt):
     for letter in txt:
         sleep(uniform(0.0250, 0.25))
         element.send_keys(letter)
 
+
 def find_jobs_button(driver):
     try:
-        filters = driver.find_elements(By.XPATH, '//*[@class="search-reusables__primary-filter"]')
+        filters = driver.find_elements(
+            By.XPATH, '//*[@class="search-reusables__primary-filter"]')
 
         for filter in filters:
             btn = filter.find_element(By.TAG_NAME, 'button')
@@ -40,9 +44,11 @@ def find_jobs_button(driver):
         input("Press enter after looking up jobs: ")
         pass
 
+
 def go_to_jobs_search(driver):
     try:
-        search_input = driver.find_element(By.XPATH, '//input[@placeholder="Search"]')
+        search_input = driver.find_element(
+            By.XPATH, '//input[@placeholder="Search"]')
         search_input.send_keys(os.environ.get('JOB_SEARCH'))
         search_input.send_keys(Keys.RETURN)
         sleep(4)
@@ -51,16 +57,17 @@ def go_to_jobs_search(driver):
         input("Press enter after looking up jobs: ")
         pass
 
+
 def handle_job(driver, data, values):
     try:
         print("Handling job...")
         job_details = driver.find_element(By.CLASS_NAME, 'jobs-details')
         buttons = job_details.find_elements(By.TAG_NAME, 'button')
-        
+
         for button in buttons:
             if "Apply" in button.get_attribute('innerText'):
                 button.click()
-        
+
         sleep(5)
 
         # Switch Tab & Fill Fields
@@ -71,9 +78,21 @@ def handle_job(driver, data, values):
 
         driver.close()
         driver.switch_to.window(driver.window_handles[0])
-    except BaseException as err:
-        print("Error at Handle Job: ", err)
+    except BaseException:
         pass
+
+def handle_jobs(driver, data, values):
+    jobs = driver.find_elements(
+        By.XPATH, '//a[@class="disabled ember-view job-card-container__link job-card-list__title"]')
+
+    for job in jobs:
+        try:
+            print('Running job...')
+            # job.click()
+            # handle_job(driver=driver, data=data, values=values)
+        except BaseException:
+            input("Press enter to move on to next job: ")
+            continue
 
 
 def handle_linkedin(driver, data, values):
@@ -84,16 +103,28 @@ def handle_linkedin(driver, data, values):
 
     # Access Job Search
     go_to_jobs_search(driver)
-    
+
     sleep(5)
-    jobs = driver.find_elements(By.XPATH, '//a[@class="disabled ember-view job-card-container__link job-card-list__title"]')
-    
-    for job in jobs:
+    current_page = 1
+
+
+    while (current_page < 40):
+        pages_list = driver.find_element(
+            By.XPATH, '//ul[@class="artdeco-pagination__pages artdeco-pagination__pages--number"]')
+
+        pg_buttons = pages_list.find_elements(
+            By.XPATH, './/li[@class="artdeco-pagination__indicator artdeco-pagination__indicator--number ember-view"]')
+
         try:
-            print('Running job...')
-            job.click()
-            handle_job(driver=driver, data=data, values=values)
+            handle_jobs(driver, data, values)
+            for btn in pg_buttons:
+                if int(btn.get_attribute('data-test-pagination-page-btn')) == current_page + 1:
+                    btn.click()
+                    sleep(5)
         except BaseException as err:
-            print("Error handling job: ", err)
-            input("Press enter to move on to next job: ")
+            if "int() argument must be a string" in err.__str__():
+                btn.click()
+                sleep(5)
             continue
+        finally:
+            current_page += 1
