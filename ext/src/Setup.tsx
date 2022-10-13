@@ -12,7 +12,8 @@ interface Props {
 
 export const Setup: React.FC<Props> = ({ user, setShowSetup }) => {
   function handleSubmit(user: User) {
-    user.isHispanic = user.race === "Hispanic or Latino" ? "Yes" : "No"
+    user.isHispanic = user.race === "Hispanic or Latino" ? "Yes" : "No";
+    user.fullName = user.firstName + " " + user.lastName;
     browser.storage.local.set({
       user,
     });
@@ -116,11 +117,7 @@ export const Setup: React.FC<Props> = ({ user, setShowSetup }) => {
                 return (
                   <SelectComponent
                     defaultValue={user[field.name]}
-                    options={[
-                      "Yes",
-                      "No",
-                      "I don't wish to answer",
-                    ]}
+                    options={["Yes", "No", "I don't wish to answer"]}
                     {...field}
                   />
                 );
@@ -148,6 +145,22 @@ export const Setup: React.FC<Props> = ({ user, setShowSetup }) => {
                       "Engineer's Degree",
                       "Other",
                     ]}
+                    {...field}
+                  />
+                );
+              case "relocationWillingness":
+                return (
+                  <SelectComponent
+                    defaultValue={user[field.name]}
+                    options={["Yes", "No"]}
+                    {...field}
+                  />
+                );
+              case "isReferral":
+                return (
+                  <SelectComponent
+                    defaultValue={user[field.name]}
+                    options={["Yes", "No"]}
                     {...field}
                   />
                 );

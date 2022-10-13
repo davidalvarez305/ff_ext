@@ -1,4 +1,4 @@
-import { Box } from "@chakra-ui/react";
+import { Box, Button } from "@chakra-ui/react";
 import { useEffect, useState } from "react";
 import { Layout } from "./Layout";
 import { Setup } from "./Setup";
@@ -96,6 +96,7 @@ export const App = () => {
           display: "flex",
           justifyContent: "center",
           alignItems: "center",
+          flexDirection: "column",
           height: "100vh",
           width: "100%",
         }}
@@ -107,9 +108,11 @@ export const App = () => {
           rightButtonClick={() => setShowSetup((prev) => !prev)}
         />
         <Box sx={{ my: 20 }}>
-          <TopButtons
-            leftButton={"LinkedIn"}
-            leftButtonClick={() => handleLinkedIn()}
+          <Button
+            variant={"outline"}
+            colorScheme={"blue"}
+            width={75}
+            onClick={() => handleLinkedIn()}
           />
         </Box>
       </Box>

@@ -139,13 +139,26 @@ export const fields = [
   },
   {
     label: "Security Clearance",
-    name: "securityClearance"
-  }
+    name: "securityClearance",
+  },
+  {
+    label: "Are you willing to relocate?",
+    name: "relocationWillingness",
+  },
+  {
+    label: "Were you referred by someone?",
+    name: "isReferral",
+  },
+  {
+    label: "What's your current job title?",
+    name: "title",
+  },
 ];
 
 export type User = {
   firstName: string;
   lastName: string;
+  fullName: string;
   email: string;
   phoneNumber: number;
   middleName: string;
@@ -179,11 +192,15 @@ export type User = {
   universityEndDate: number;
   areaOfInterest: string;
   securityClearance: string;
+  relocationWillingness: string;
+  isReferral: string;
+  title: string;
 };
 
 export const emptyUser = {
   firstName: "",
   lastName: "",
+  fullName: "",
   email: "",
   phoneNumber: 0,
   middleName: "",
@@ -217,6 +234,9 @@ export const emptyUser = {
   universityEndDate: 0,
   areaOfInterest: "",
   securityClearance: "",
+  relocationWillingness: "",
+  isReferral: "",
+  title: "",
 };
 
 export const capitalizeFirstLetter = (str: string) => {
