@@ -45,11 +45,11 @@ def find_jobs_button(driver):
         pass
 
 
-def go_to_jobs_search(driver):
+def go_to_jobs_search(driver, data):
     try:
         search_input = driver.find_element(
             By.XPATH, '//input[@placeholder="Search"]')
-        search_input.send_keys(os.environ.get('JOB_SEARCH'))
+        search_input.send_keys(data['keywords'])
         search_input.send_keys(Keys.RETURN)
         sleep(4)
         find_jobs_button(driver)
@@ -88,8 +88,8 @@ def handle_jobs(driver, data, values):
     for job in jobs:
         try:
             print('Running job...')
-            # job.click()
-            # handle_job(driver=driver, data=data, values=values)
+            job.click()
+            handle_job(driver=driver, data=data, values=values)
         except BaseException:
             input("Press enter to move on to next job: ")
             continue
@@ -102,7 +102,7 @@ def handle_linkedin(driver, data, values):
     input("Press enter after logging in: ")
 
     # Access Job Search
-    go_to_jobs_search(driver)
+    go_to_jobs_search(driver=driver, data=data)
 
     sleep(5)
     current_page = 1
@@ -116,7 +116,7 @@ def handle_linkedin(driver, data, values):
             By.XPATH, './/li[@class="artdeco-pagination__indicator artdeco-pagination__indicator--number ember-view"]')
 
         try:
-            handle_jobs(driver, data, values)
+            handle_jobs(driver=driver, data=data, values=values)
             for btn in pg_buttons:
                 if int(btn.get_attribute('data-test-pagination-page-btn')) == current_page + 1:
                     btn.click()
