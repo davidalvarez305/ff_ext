@@ -38,6 +38,7 @@ def find_jobs_button(driver):
                 btn.click()
     except BaseException:
         input("Press enter after looking up jobs: ")
+        pass
 
 def go_to_jobs_search(driver):
     try:
@@ -48,9 +49,11 @@ def go_to_jobs_search(driver):
         find_jobs_button(driver)
     except BaseException:
         input("Press enter after looking up jobs: ")
+        pass
 
 def handle_job(driver, data, values):
     try:
+        print("Handling job...")
         job_details = driver.find_element(By.CLASS_NAME, 'jobs-details')
         buttons = job_details.find_elements(By.TAG_NAME, 'button')
         
@@ -67,8 +70,10 @@ def handle_job(driver, data, values):
         site_router(driver=driver, data=data, values=values)
 
         driver.close()
+        driver.switch_to.window(driver.window_handles[0])
     except BaseException as err:
         print("Error at Handle Job: ", err)
+        pass
 
 
 def handle_linkedin(driver, data, values):
@@ -85,6 +90,7 @@ def handle_linkedin(driver, data, values):
     
     for job in jobs:
         try:
+            print('Running job...')
             job.click()
             handle_job(driver=driver, data=data, values=values)
         except BaseException as err:
