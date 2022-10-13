@@ -81,6 +81,7 @@ def handle_job(driver, data, values):
     except BaseException:
         pass
 
+
 def handle_jobs(driver, data, values):
     jobs = driver.find_elements(
         By.XPATH, '//a[@class="disabled ember-view job-card-container__link job-card-list__title"]')
@@ -107,7 +108,6 @@ def handle_linkedin(driver, data, values):
     sleep(5)
     current_page = 1
 
-
     while (current_page < 40):
         pages_list = driver.find_element(
             By.XPATH, '//ul[@class="artdeco-pagination__pages artdeco-pagination__pages--number"]')
@@ -117,12 +117,13 @@ def handle_linkedin(driver, data, values):
 
         try:
             handle_jobs(driver=driver, data=data, values=values)
-            for btn in pg_buttons:
+            for index, btn in enumerate(pg_buttons):
                 if int(btn.get_attribute('data-test-pagination-page-btn')) == current_page + 1:
                     btn.click()
                     sleep(5)
         except BaseException as err:
-            if "int() argument must be a string" in err.__str__():
+            # Only click the tree dots if the previous index was not one, otherwise, we'll keep circling back.
+            if "int() argument must be a string" in err.__str__() and int(pg_buttons[index - 1].get_attribute('data-test-pagination-page-btn')) != 1:
                 btn.click()
                 sleep(5)
             continue
