@@ -60,10 +60,10 @@ def handle_fields(driver, values, data):
                 ]
                 if "resume" in resume_fields:
                         if field['element'].get_attribute('value') == "":
-                            field['element'].send_keys(str(os.environ.get('RESUME_PATH')))
+                            field['element'].send_keys(os.environ.get('RESUME_PATH'))
                 if "cover" in resume_fields:
                     if field['element'].get_attribute('value') == "":
-                        field['element'].send_keys(str(os.environ.get('COVER_PATH')))
+                        field['element'].send_keys(os.environ.get('COVER_PATH'))
 
             # Handle Select Buttons
             elif field['tagName'] == 'SELECT':

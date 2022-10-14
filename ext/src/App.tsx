@@ -126,13 +126,14 @@ export const App = () => {
                   name={"keywords"}
                   label={"Linkedin Job Search"}
                 />
-                ;
                 <Button
                   variant={"outline"}
                   colorScheme={"blue"}
                   type={"submit"}
                   width={75}
-                />
+                >
+                  LinkedIn
+                </Button>
               </Box>
             </Form>
           </Formik>

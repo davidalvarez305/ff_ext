@@ -68,7 +68,6 @@ export const Setup: React.FC<Props> = ({ user, setShowSetup }) => {
                     {...field}
                   />
                 );
-
               case "securityClearance":
                 return (
                   <SelectComponent

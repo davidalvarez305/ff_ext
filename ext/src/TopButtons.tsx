@@ -38,7 +38,7 @@ export const TopButtons: React.FC<Props> = ({
       {rightButton && rightButtonClick && (
         <Button
           variant={"outline"}
-          colorScheme={"blue"}
+          colorScheme={"red"}
           width={75}
           onClick={rightButtonClick}
         >
