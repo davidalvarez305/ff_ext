@@ -1,3 +1,4 @@
+import os
 from time import sleep
 from selenium.webdriver.common.by import By
 
@@ -59,6 +60,8 @@ def handle_underdog(options, data, driver):
             field_name = element.get_attribute('name')
             if "first" in field_name.lower():
                 element.send_keys(data['user']['firstName'])
+            if "resume" in field_name.lower():
+                element.send_keys(os.environ.get('RESUME_PATH'))
             if "last" in field_name.lower():
                 element.send_keys(data['user']['lastName'])
             if "email" in field_name.lower():
@@ -70,15 +73,23 @@ def handle_underdog(options, data, driver):
 
 def handle_underdog_fields(driver, data, values):
     dropdowns = driver.find_elements(By.CLASS_NAME, "div-block-37")
-    for element in dropdowns:
-        try:
-            element.click()
+    
+    to_continue = True
+    while (to_continue):
+        for element in dropdowns:
+            try:
+                element.click()
 
-            options = driver.find_elements(
-                    By.TAG_NAME, "option")
+                options = driver.find_elements(
+                        By.TAG_NAME, "option")
 
-            handle_underdog(options, data, driver)
+                handle_underdog(options, data, driver)
 
-        except BaseException as err:
-            # print(err)
-            continue
+            except BaseException:
+                val = input("Press any letter if you want to move on to the next page: ")
+                to_continue = val == ""
+                continue
+                
+        # Trigger if finished
+        val = input("Press any letter if it's completed: ")
+        to_continue = val == ""

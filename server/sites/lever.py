@@ -1,4 +1,5 @@
 from datetime import datetime
+import os
 from utils import handle_input_field, handle_select_child_options
 from selenium.webdriver.common.by import By
 
@@ -12,6 +13,8 @@ def handle_lever_fields(field_name, element, data, values):
         handle_input_field(element, f"{data['user']['firstName']} {data['user']['lastName']}", x_path)
     elif "job posting" in field_name:
         handle_select_child_options(element, "linkedin")
+    elif "resume" in field_name.lower():
+        element.send_keys(os.environ.get('RESUME_PATH'))
     else:
         for value in values:
             if any(substr in field_name.lower() for substr in value['question']):
@@ -30,7 +33,8 @@ def handle_lever(driver, data, values):
 
     elements += driver.find_elements(By.CLASS_NAME, "application-additional")
 
-    while (True):
+    to_continue = True
+    while (to_continue):
         for element in elements:
             try:
                 field_name =  element.find_element(By.XPATH, "./label").get_attribute('innerText')
@@ -41,6 +45,9 @@ def handle_lever(driver, data, values):
                 handle_lever_fields(field_name, element, data, values)
 
             except BaseException:
+                val = input("Press any letter if you want to move on to the next page: ")
+                to_continue = val == ""
                 continue
-
-        input("Handle & press enter: ")
+        
+        val = input("Press any letter if it's completed: ")
+        to_continue = val == ""
