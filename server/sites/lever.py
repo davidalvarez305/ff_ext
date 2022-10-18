@@ -41,7 +41,8 @@ def handle_lever(driver, data, values):
                 element.click()
 
             handle_lever_fields(field_name, element, data, values)
-    except BaseException:
+    except BaseException as err:
+        print(err)
         pass
     finally:
         to_continue = complete_prompt()

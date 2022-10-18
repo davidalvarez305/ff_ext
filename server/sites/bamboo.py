@@ -13,6 +13,7 @@ def handle_select_div(driver, user_data):
 def handle_bamboo(driver, data):
     try:
         elements = driver.find_elements(By.CLASS_NAME, "CandidateForm__row")
+        print('len: ', len(elements))
 
         for element in elements:
             field_name = element.find_element(By.TAG_NAME, "label").get_attribute('innerText')
@@ -42,7 +43,8 @@ def handle_bamboo(driver, data):
                     if question['question'].lower() in field_name.lower():
                         field = question['data']
                         handle_textarea(element, data['user'][f"{field}"])
-    except BaseException:
+    except BaseException as err:
+        print(err)
         pass
     finally:
         to_continue = complete_prompt()

@@ -84,7 +84,8 @@ def handle_underdog_fields(driver, data, values):
                     By.TAG_NAME, "option")
 
             handle_underdog(options, data, driver)
-    except BaseException:
+    except BaseException as err:
+        print(err)
         pass
     finally:
         to_continue = complete_prompt()

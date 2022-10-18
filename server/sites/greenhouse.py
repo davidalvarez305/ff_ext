@@ -79,7 +79,8 @@ def handle_greenhouse(driver, data, values):
                     sleep(1)
                 
                 handle_hidden_field(field_name, element, driver, data, values)
-    except BaseException:
+    except BaseException as err:
+        print(err)
         pass
     finally:
         to_continue = complete_prompt()

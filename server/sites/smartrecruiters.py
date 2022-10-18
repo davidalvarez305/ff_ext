@@ -108,7 +108,8 @@ def handle_smartrecruiters(driver, data, values):
                         # Save
                         save_button = field.find_element(By.XPATH, '//button[@data-test="education-save"]')
                         save_button.click()
-    except BaseException:
+    except BaseException as err:
+        print(err)
         pass
     finally:
         to_continue = complete_prompt()
