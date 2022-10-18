@@ -111,12 +111,13 @@ def handle_smartrecruiters(driver, data, values):
     except BaseException as err:
         print(err)
         pass
-    finally:
-        to_continue = complete_prompt()
 
-        while (to_continue):
-            try:
-                handle_smartrecruiters(driver, data, values)
-            except BaseException:
-                to_continue = complete_prompt()
-                continue
+def smartrecruiters(driver, data, values):
+    to_continue = True
+    while (to_continue):
+        try:
+            handle_smartrecruiters(driver, data, values)
+            to_continue = complete_prompt()
+        except BaseException:
+            to_continue = complete_prompt()
+            continue

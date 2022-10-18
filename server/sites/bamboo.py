@@ -46,11 +46,13 @@ def handle_bamboo(driver, data):
     except BaseException as err:
         print(err)
         pass
-    finally:
-        to_continue = complete_prompt()
-        while (to_continue):
-            try:
-                handle_bamboo(driver, data)
-            except BaseException:
-                to_continue = complete_prompt()
-                continue
+
+def bamboo(driver, data):
+    to_continue = True
+    while (to_continue):
+        try:
+            handle_bamboo(driver, data)
+            to_continue = complete_prompt()
+        except BaseException:
+            to_continue = complete_prompt()
+            continue

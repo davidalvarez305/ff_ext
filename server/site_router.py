@@ -1,10 +1,10 @@
 from selenium.webdriver.common.by import By
 from handle_fields import enter_fields
-from sites.bamboo import handle_bamboo
-from sites.underdog import handle_underdog_fields
-from sites.lever import handle_lever
-from sites.smartrecruiters import handle_smartrecruiters, upload_smartrecruiters_resume
-from sites.greenhouse import handle_greenhouse
+from sites.bamboo import bamboo
+from sites.underdog import underdog
+from sites.lever import lever
+from sites.smartrecruiters import smartrecruiters, upload_smartrecruiters_resume
+from sites.greenhouse import greenhouse
 from sites.workdayjobs import handle_workdayjobs
 from utils import click_preapplication_button
 
@@ -15,20 +15,20 @@ def site_router(driver, data, values):
 
     if "bamboohr" in data['url']:
         click_preapplication_button(driver)
-        handle_bamboo(driver=driver, data=data)
+        bamboo(driver=driver, data=data)
 
     if "smartrecruiters" in data['url']:
         upload_smartrecruiters_resume(driver=driver)
 
     try:
         if "greenhouse" in data['url']:
-            handle_greenhouse(driver=driver, data=data, values=values)
+            greenhouse(driver=driver, data=data, values=values)
         elif "smartrecruiters" in data['url']:
-            handle_smartrecruiters(driver=driver, data=data, values=values)
+            smartrecruiters(driver=driver, data=data, values=values)
         elif "lever" in data['url']:
-            handle_lever(driver=driver, data=data, values=values)
+            lever(driver=driver, data=data, values=values)
         elif "underdog.io" in data['url']:
-            handle_underdog_fields(driver=driver, data=data, values=values)
+            underdog(driver=driver, data=data, values=values)
         else:
             enter_fields(driver, values, data)
     except BaseException:

@@ -1,7 +1,7 @@
 import os
 from time import sleep
 from selenium.webdriver.common.by import By
-from utils import find_fields_by_label
+from utils import complete_prompt, find_fields_by_label
 
 def get_element(element, values):
     attributes = ['id', 'name', 'class']
@@ -92,18 +92,13 @@ def handle_fields(driver, values, data):
                         if field['element'].get_attribute('value') == "":
                             field['element'].send_keys(data['user'][f"{question['data']}"])
 
-    val = input("Write one key if values have been correctly executed: ")
-    return val == ""
-
 
 def enter_fields(driver, values, data):
     to_continue = True
     while (to_continue):
         try:
-            print("Executing enter fields...")
-            to_continue = handle_fields(driver, values, data)
-        except BaseException as err:
-            print("Error handling field: ", err)
-            val = input("Press any letter if you want to move on to the next page: ")
-            to_continue = val == ""
+            handle_fields(driver, values, data)
+            to_continue = complete_prompt()
+        except BaseException:
+            to_continue = complete_prompt()
             continue
