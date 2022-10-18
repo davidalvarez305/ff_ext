@@ -1,6 +1,6 @@
 from datetime import datetime
 import os
-from utils import handle_input_field, handle_select_child_options
+from utils import complete_prompt, handle_input_field, handle_select_child_options
 from selenium.webdriver.common.by import By
 
 
@@ -33,21 +33,19 @@ def handle_lever(driver, data, values):
 
     elements += driver.find_elements(By.CLASS_NAME, "application-additional")
 
-    to_continue = True
+    for element in elements:
+        field_name =  element.find_element(By.XPATH, "./label").get_attribute('innerText')
+
+        if not "Resume" in field_name:
+            element.click()
+
+        handle_lever_fields(field_name, element, data, values)
+
+    to_continue = complete_prompt()
+
     while (to_continue):
-        for element in elements:
-            try:
-                field_name =  element.find_element(By.XPATH, "./label").get_attribute('innerText')
-
-                if not "Resume" in field_name:
-                    element.click()
-
-                handle_lever_fields(field_name, element, data, values)
-
-            except BaseException:
-                val = input("Press any letter if you want to move on to the next page: ")
-                to_continue = val == ""
-                continue
-        
-        val = input("Press any letter if it's completed: ")
-        to_continue = val == ""
+        try:
+            handle_lever(driver, data, values)
+        except BaseException:
+            to_continue = complete_prompt()
+            continue

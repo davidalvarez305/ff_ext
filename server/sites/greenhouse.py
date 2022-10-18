@@ -1,6 +1,6 @@
 import os
 from time import sleep
-from utils import field_match, find_fields_by_label, handle_input_field, handle_select_child_options
+from utils import complete_prompt, field_match, find_fields_by_label, handle_input_field, handle_select_child_options
 from selenium.webdriver.common.by import By
 
 def handle_greenhouse_autocomplete(driver, data, field_name):
@@ -69,28 +69,22 @@ def handle_greenhouse(driver, data, values):
         if "Phone" in input_field['label']:
             if input_field['element'].get_attribute('value') == "":
                 input_field['element'].send_keys(data['user']['phoneNumber'])
-    
-    to_continue = True
+
+    for element in dropdowns:
+            element.click()
+            field_name = element.find_element(By.XPATH, "./label").get_attribute('innerText')
+
+            if "School" or "Degree" or "Discipline" in field_name:
+                handle_greenhouse_autocomplete(driver, data, field_name)
+                sleep(1)
+            
+            handle_hidden_field(field_name, element, driver, data, values)
+
+    to_continue = complete_prompt()
 
     while (to_continue):
-        for element in dropdowns:
-            try:
-                element.click()
-                field_name = element.find_element(By.XPATH, "./label").get_attribute('innerText')
-
-                if "School" or "Degree" or "Discipline" in field_name:
-                    handle_greenhouse_autocomplete(driver, data, field_name)
-                    sleep(1)
-                
-                handle_hidden_field(field_name, element, driver, data, values)
-
-            except BaseException:
-                val = input("Press any letter if you want to move on to the next page: ")
-                to_continue = val == ""
-                continue
-
-        # Trigger if finished
-        val = input("Press any letter if it's completed: ")
-        to_continue = val == ""
-        
-        
+        try:
+            handle_greenhouse(driver, data, values)
+        except BaseException:
+            to_continue = complete_prompt()
+            continue

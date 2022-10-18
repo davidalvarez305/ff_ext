@@ -3,6 +3,12 @@ from selenium.webdriver.common.by import By
 from list import COMMON_QUESTIONS
 from selenium.webdriver.common.keys import Keys
 
+def complete_prompt():
+    val = input("Press any letter if it's completed: ")
+    if len(val) > 0:
+        return False
+    return True
+
 def find_fields_by_label(driver):
     labels = driver.find_elements(By.TAG_NAME, 'label')
 
