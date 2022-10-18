@@ -25,27 +25,29 @@ def handle_lever_fields(field_name, element, data, values):
                     handle_input_field(element, data['user'][f"{value['data']}"], x_path)
 
 def handle_lever(driver, data, values):
-    elements = driver.find_elements(By.CLASS_NAME, "application-question")
+    try:
+        elements = driver.find_elements(By.CLASS_NAME, "application-question")
 
-    elements += driver.find_elements(By.CLASS_NAME, "custom-question")
+        elements += driver.find_elements(By.CLASS_NAME, "custom-question")
 
-    elements += driver.find_elements(By.CLASS_NAME, "application-dropdown")
+        elements += driver.find_elements(By.CLASS_NAME, "application-dropdown")
 
-    elements += driver.find_elements(By.CLASS_NAME, "application-additional")
+        elements += driver.find_elements(By.CLASS_NAME, "application-additional")
 
-    for element in elements:
-        field_name =  element.find_element(By.XPATH, "./label").get_attribute('innerText')
+        for element in elements:
+            field_name =  element.find_element(By.XPATH, "./label").get_attribute('innerText')
 
-        if not "Resume" in field_name:
-            element.click()
+            if not "Resume" in field_name:
+                element.click()
 
-        handle_lever_fields(field_name, element, data, values)
-
-    to_continue = complete_prompt()
-
-    while (to_continue):
-        try:
-            handle_lever(driver, data, values)
-        except BaseException:
-            to_continue = complete_prompt()
-            continue
+            handle_lever_fields(field_name, element, data, values)
+    except BaseException:
+        pass
+    finally:
+        to_continue = complete_prompt()
+        while (to_continue):
+            try:
+                handle_lever(driver, data, values)
+            except BaseException:
+                to_continue = complete_prompt()
+                continue

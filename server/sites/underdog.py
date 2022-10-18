@@ -74,21 +74,23 @@ def handle_underdog(options, data, driver):
                 element.send_keys(data['user']['portfolio'])
 
 def handle_underdog_fields(driver, data, values):
-    dropdowns = driver.find_elements(By.CLASS_NAME, "div-block-37")
+    try:
+        dropdowns = driver.find_elements(By.CLASS_NAME, "div-block-37")
     
-    for element in dropdowns:
-        element.click()
+        for element in dropdowns:
+            element.click()
 
-        options = driver.find_elements(
-                By.TAG_NAME, "option")
+            options = driver.find_elements(
+                    By.TAG_NAME, "option")
 
-        handle_underdog(options, data, driver)
-
-    to_continue = complete_prompt()
-
-    while (to_continue):
-        try:
-            handle_underdog_fields(driver, data, values)
-        except BaseException:
-            to_continue = complete_prompt()
-            continue
+            handle_underdog(options, data, driver)
+    except BaseException:
+        pass
+    finally:
+        to_continue = complete_prompt()
+        while (to_continue):
+            try:
+                handle_underdog_fields(driver, data, values)
+            except BaseException:
+                to_continue = complete_prompt()
+                continue
